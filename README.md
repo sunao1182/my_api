@@ -1,24 +1,11 @@
-# README
+画面で確認する場所
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Reactサーバーを起動して
 
-Things you may want to cover:
+npm run dev
 
-* Ruby version
+ブラウザで
 
-* System dependencies
+http://localhost:5173
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+を開いてください。

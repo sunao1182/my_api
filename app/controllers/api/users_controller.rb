@@ -1,4 +1,19 @@
 class Api::UsersController < ApplicationController
+
+  # ユーザー一覧を返すAPI
+  def index
+    users = User.all
+
+    # React側で扱いやすいように、必要な項目だけJSONで返す
+    # 例えば、APIから返すJSONの形式は、[{ id: 1, name: "テスト太郎" }, { id: 2, name: "テスト花子" }] のような形式になります。
+    render json: users.map { |user|
+      {
+        id: user.id,
+        name: user.name
+      }
+    }
+  end
+
   # showアクションは、ユーザーのIDをURLパラメータから取得し、そのIDに対応するユーザーをデータベースから検索します。
   # 見つかったユーザーのIDと名前をJSON形式でレスポンスとして返します。
   def show
