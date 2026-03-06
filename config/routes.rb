@@ -3,6 +3,6 @@ Rails.application.routes.draw do
   # 「root」でルーティングすることができます。
   namespace :api do
     #「resources」でルーティングすることができます。ここでは、usersリソースのindexアクションとshowアクションのみをルーティングしています。
-    resources :users, only: [:index, :show]
+    resources :users, only: [:index, :show, :create]
   end
 end
