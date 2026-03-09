@@ -1,25 +1,30 @@
-// UserCardコンポーネント
-// ユーザの情報を表示するコンポーネント
+// ユーザーカードコンポーネント
+// ユーザーの情報を表示するためのコンポーネントです。ユーザーのID、名前、詳細ページへのリンク、削除ボタンを表示します。
 import type { User } from "../types/user"
+import { Link } from "react-router-dom"
 
-// propsの型
-// これにより、UserCardコンポーネントがuserというプロパティを受け取ることが期待され、そのプロパティの型はUserであることが定義されます。
+// Propsの型を定義
+// これにより、UserCardコンポーネントが受け取るpropsの型を定義しています。
+// userはUser型のオブジェクトで、onDeleteはユーザーを削除するための関数です。
 type Props = {
-  // ユーザー情報
   user: User
+  // onDeleteは、ユーザーを削除するための関数で、ユーザーのIDを引数として受け取ります。
+  // これにより、UserCardコンポーネントがユーザーの削除機能を提供できるようになります。
+  // ユーザーが削除ボタンをクリックしたときにonDelete関数が呼び出され、ユーザーのIDが渡されます。
+  onDelete: (id: number) => void
 }
 
-// 子コンポーネント
-// これにより、UserCardコンポーネントが定義され、親コンポーネントから渡されたユーザーデータを表示することができます。
-export default function UserCard({ user }: Props) {
-
+// ユーザーカードコンポーネントを定義
+// これにより、UserCardコンポーネントが定義されます。ユーザーのIDと名前を表示し、詳細ページへのリンクと削除ボタンを提供します。
+// 削除ボタンがクリックされたときには、onDelete関数が呼び出され、ユーザーのIDが渡されます。
+export default function UserCard({ user, onDelete }: Props) {
   return (
     <li>
-
-      {/* 親から渡されたuser */}
-      {user.id} : {user.name}
-
+      {user.id} : {user.name}{" "}
+      <Link to={`/users/${user.id}`}>詳細</Link>{" "}
+      {/* 削除ボタンがクリックされたときにonDelete関数が呼び出され、ユーザーのIDが渡されます。
+      これにより、ユーザーの削除処理が実行されます。 */}
+      <button onClick={() => onDelete(user.id)}>削除</button>
     </li>
   )
-
 }

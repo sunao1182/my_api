@@ -1,97 +1,81 @@
-// ユーザー一覧ページ
-// これにより、ユーザー一覧を表示するためのUsersPageコンポーネントが定義されます。
+// UsersPageコンポーネント
 import { useEffect, useState } from "react"
 // React RouterのLinkコンポーネントをimport
 // これにより、ユーザー一覧ページからユーザーの詳細ページや新規作成ページへのリンクを作成することができます。
 import { Link } from "react-router-dom"
 // API呼び出し関数をimport
-// これにより、ユーザー一覧を取得するためのfetchUsers関数が使用できるようになります。
-import { fetchUsers } from "../services/userApi"
-// ユーザーの型をimport
+// これにより、ユーザーの一覧を取得するためのfetchUsers関数と、ユーザーを削除するためのdeleteUser関数が使用できるようになります。
+import { fetchUsers, deleteUser } from "../services/userApi"
+// ユーザーカードコンポーネントをimport
+// これにより、ユーザーの情報を表示するためのUserCardコンポーネントが使用できるようになります。
 import type { User } from "../types/user"
-// UserCardコンポーネントをimport
+// ローディングコンポーネントをimport
 import UserCard from "../components/UserCard"
+// ローディングコンポーネントをimport
+import Loading from "../components/Loading"
+// エラーメッセージコンポーネントをimport
+import ErrorMessage from "../components/ErrorMessage"
 
-// ユーザー一覧ページコンポーネント
+// 一覧ページ
+// ここでは、ユーザーの一覧を表示するためのUsersPageコンポーネントを定義しています。
 export default function UsersPage() {
-
   // ユーザー一覧
-  // useStateのジェネリクスでUser[]型を指定
   const [users, setUsers] = useState<User[]>([])
-
-  // ローディング状態
-  // 初期値はtrue（読み込み中）
+  // ローディングとエラーの状態を管理するためのstateを定義
   const [loading, setLoading] = useState(true)
-
-  // エラー状態
-  // 初期値はnull（エラーなし）
+  // エラー
   const [error, setError] = useState<string | null>(null)
+  // ユーザー一覧を取得する関数を定義
+  const loadUsers = async () => {
+    // API呼び出しをtry-catchで囲む
+    try {
+      // ローディング開始とエラーリセット
+      // これにより、ユーザーの一覧を取得する前にローディング状態がtrueに設定され、エラー状態がnullにリセットされます。これにより、ユーザーが一覧を取得する際にローディング表示がされ、前回のエラーがクリアされるようになります。
+      setLoading(true)
+      setError(null)
+      // API呼び出し
+      // これにより、fetchUsers関数が呼び出され、ユーザーの一覧が取得されます。取得されたユーザーデータはsetUsers関数を使用してusersの状態に保存されます。
+      const data = await fetchUsers()
+      // 取得したユーザーデータをstateにセットする
+      setUsers(data)
+      // API呼び出しが成功した場合はエラーをnullにする
+    } catch {
+      // API呼び出しが失敗した場合はエラーメッセージをセットする
+      setError("ユーザー取得失敗")
+      // API呼び出しが失敗した場合はユーザー一覧を空にする
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // コンポーネントがマウントされたときにユーザー一覧を取得する
   useEffect(() => {
-    // API呼び出し関数を定義
-    const loadUsers = async () => {
-
-      try {
-
-        // API呼び出し
-        const data = await fetchUsers()
-
-        // stateにセット
-        setUsers(data)
-
-      } catch  {
-        
-        // エラーが発生した場合はエラーメッセージをセット
-        setError("ユーザー取得失敗")
-      // 最後にローディング状態をfalseにする  
-      } finally {
-        // ローディング状態をfalseにする
-        // これにより、API呼び出しが成功しても失敗してもローディング状態が終了するようになります。
-        setLoading(false)
-
-      }
-
-    }
-    // ユーザー一覧を取得する関数を呼び出す
-    // これにより、コンポーネントがマウントされたときにユーザー一覧が取得されます。
     loadUsers()
-    // 第二引数の空配列は、useEffectがコンポーネントのマウント時に一度だけ実行されることを意味します。
   }, [])
 
-  if (loading) return <p>Loading...</p>
-  // エラーがある場合はエラーメッセージを表示
-  if (error) return <p>{error}</p>
-  
-  // ユーザー一覧を表示
+  // ユーザー削除処理
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteUser(id)
+      await loadUsers()
+    } catch {
+      setError("ユーザー削除失敗")
+    }
+  }
+
+  // ローディング中はLoadingコンポーネントを表示し、エラーがある場合はErrorMessageコンポーネントを表示する
+  if (loading) return <Loading />
+  if (error) return <ErrorMessage message={error} />
+
   return (
     <div>
-
       <h1>Users</h1>
-
-      <Link to="/users/new">
-        新規作成
-      </Link>
-
+      <Link to="/users/new">新規作成</Link>
       <ul>
-        {/* ユーザー一覧をmapでループして表示 */}
         {users.map((user) => (
-          // ユーザーごとに<li>を作成 */}
-          <li key={user.id}>
-            {/* UserCardコンポーネントを呼び出し、userをpropsとして渡す */}
-            <UserCard
-            // keyはReactがリストを効率的に更新するために必要なプロパティで、user.idを使用して一意のキーを指定しています。
-            key  = {user.id}
-            user = {user}
-            />
-
-            <Link to={`/users/${user.id}`}>
-              詳細
-            </Link>
-          </li>
+          <UserCard key={user.id} user={user} onDelete={handleDelete} />
         ))}
       </ul>
-
     </div>
   )
 }

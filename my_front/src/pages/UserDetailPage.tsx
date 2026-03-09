@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 
-import { fetchUser } from "../services/userApi"
+import { fetchUser, updateUser } from "../services/userApi"
 import type { User } from "../types/user"
 
 // 詳細ページ
@@ -10,8 +10,14 @@ export default function UserDetailPage() {
   // URLのidを取得
   const { id } = useParams()
 
+  // 一覧へ戻るために使う
+  const navigate = useNavigate()
+
   // ユーザー情報
   const [user, setUser] = useState<User | null>(null)
+
+  // 入力欄用の名前
+  const [name, setName] = useState("")
 
   // ローディング
   const [loading, setLoading] = useState(true)
@@ -53,6 +59,27 @@ export default function UserDetailPage() {
     // 第二引数の[id]は、useEffectがidの値が変わるたびに実行されることを意味します。
     // これにより、URLのidが変更されたときに新しいユーザー情報が取得されます。
   }, [id])
+
+  // 更新ボタン押下時の処理
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    // フォーム送信による画面リロードを防ぐ
+    e.preventDefault()
+
+    try {
+      // idがなければ更新できないので処理終了
+      if (!id) return
+
+      // APIへ更新リクエスト
+      // これにより、updateUser関数が呼び出され、ユーザーのIDと新しい名前を引数として渡すことでユーザー情報が更新されます。
+      await updateUser(id, name)
+
+      // 更新成功後、一覧画面へ戻る
+      navigate("/")
+    } catch {
+      setError("ユーザー更新失敗")
+    }
+  }
+
   // ローディング中はLoading...を表示
   if (loading) return <p>Loading...</p>
   // エラーがある場合はエラーメッセージを表示
@@ -70,6 +97,24 @@ export default function UserDetailPage() {
 
       <p>Name: {user.name}</p>
 
+      {/* 更新フォーム */}
+      {/* これにより、ユーザーの名前を編集するためのフォームが表示されます。*/}
+      {/* onSubmitイベントにhandleUpdate関数が設定されているため、フォームが送信されたときにhandleUpdate関数が呼び出されます。 */}
+      <form onSubmit={handleUpdate}>
+        <div>
+          <label htmlFor="name">名前: </label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            // onChangeイベントにsetName関数が設定されているため、ユーザーが入力欄に文字を入力するたびにnameの状態が更新されます。
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <button type="submit">更新</button>
+      </form>
+      
       <Link to="/">
         一覧へ戻る
       </Link>

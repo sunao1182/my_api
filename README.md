@@ -15,3 +15,8 @@ http://localhost:5173
 curl -X POST http://localhost:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{"user":{"name":"山本一郎"}}'
+
+# DELETE curlコマンド
+# 例：ユーザー
+curl -X DELETE http://localhost:3000/api/users/1
+
