@@ -4,6 +4,7 @@ import type { User } from "../types/user"
 import { Link } from "react-router-dom"
 
 // Propsの型を定義
+// Propsとは、コンポーネントに渡されるデータのことです。ここでは、UserCardコンポーネントが受け取るpropsの型を定義しています。
 // これにより、UserCardコンポーネントが受け取るpropsの型を定義しています。
 // userはUser型のオブジェクトで、onDeleteはユーザーを削除するための関数です。
 type Props = {

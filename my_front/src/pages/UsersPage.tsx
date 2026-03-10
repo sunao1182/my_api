@@ -72,6 +72,7 @@ export default function UsersPage() {
       <h1>Users</h1>
       <Link to="/users/new">新規作成</Link>
       <ul>
+        {/* ユーザーの一覧を表示するために、users配列をmap関数でループしてUserCardコンポーネントを生成しています。*/}
         {users.map((user) => (
           <UserCard key={user.id} user={user} onDelete={handleDelete} />
         ))}

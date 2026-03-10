@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-
+import UserForm from "../components/UserForm"
+import Loading from "../components/Loading"
+import ErrorMessage from "../components/ErrorMessage"
 import { fetchUser, updateUser } from "../services/userApi"
 import type { User } from "../types/user"
 
@@ -81,9 +83,9 @@ export default function UserDetailPage() {
   }
 
   // ローディング中はLoading...を表示
-  if (loading) return <p>Loading...</p>
+  if (loading) return <Loading />
   // エラーがある場合はエラーメッセージを表示
-  if (error) return <p>{error}</p>
+  if (error) return <ErrorMessage message={error} />
   // ユーザーが見つからない場合はUser not foundを表示
   if (!user) return <p>User not found</p>
 
@@ -99,21 +101,15 @@ export default function UserDetailPage() {
 
       {/* 更新フォーム */}
       {/* これにより、ユーザーの名前を編集するためのフォームが表示されます。*/}
-      {/* onSubmitイベントにhandleUpdate関数が設定されているため、フォームが送信されたときにhandleUpdate関数が呼び出されます。 */}
-      <form onSubmit={handleUpdate}>
-        <div>
-          <label htmlFor="name">名前: </label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            // onChangeイベントにsetName関数が設定されているため、ユーザーが入力欄に文字を入力するたびにnameの状態が更新されます。
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <button type="submit">更新</button>
-      </form>
+      {/* UserFormコンポーネントは、ユーザーの名前を入力するためのフォームを提供し、onChangeプロップで入力値の変更を処理し、
+          onSubmitプロップでフォームの送信を処理します。
+          buttonTextプロップは、送信ボタンに表示されるテキストを指定します。*/}
+      <UserForm
+        name={name}
+        onChange={setName}
+        onSubmit={handleUpdate}
+        buttonText="更新"
+      />
       
       <Link to="/">
         一覧へ戻る
