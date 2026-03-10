@@ -1,46 +1,56 @@
 // ユーザー新規作成ページのコンポーネント
-// ここでは、ユーザー新規作成ページのコンポーネントを定義しています。
-// これにより、ユーザーの名前を入力して新しいユーザーを作成するためのフォームが表示されます。
+// これにより、ユーザーの新規作成ページを定義するUserNewPageコンポーネントが作成されます。
 import { useState } from "react"
-// React RouterのuseNavigateとLinkコンポーネントをimport
-// これにより、ユーザー新規作成ページからユーザーの一覧ページへのリンクを作成したり、ユーザー作成後に一覧ページへ遷移することができます。
+
+// React Routerの機能をimport
+// useNavigateは、プログラム的にページ遷移を行うためのフックです。
+// これにより、ユーザーの作成が成功した後にユーザー一覧ページへ遷移することができます。
+// Linkは、ユーザーがクリックしてページ遷移できるリンクを作成するためのコンポーネントです。
 import { useNavigate, Link } from "react-router-dom"
+
 // API呼び出し関数をimport
-// これにより、ユーザーを作成するためのcreateUser関数が使用できるようになります。
+// これにより、createUser関数がインポートされ、ユーザーの新規作成処理を行うことができます。
 import { createUser } from "../services/userApi"
+
 // ユーザーフォームコンポーネントをimport
-// これにより、ユーザーの名前を入力するためのUserFormコンポーネントが使用できるようになります。
+// これにより、UserFormコンポーネントがインポートされ、ユーザーの名前を入力するフォームを表示することができます。
 import UserForm from "../components/UserForm"
 
-// 新規作成ページ
+// useUsers hook をimport
+// これにより、useUsersカスタムフックがインポートされ、ユーザーの一覧を再取得するためのloadUsers関数を利用することができます。
+import useUsers from "../hooks/useUsers"
+
+// ユーザー新規作成ページのコンポーネント
 export default function UserNewPage() {
-  // 入力値
+  // ユーザーの名前を管理するstate
   const [name, setName] = useState("")
-
-  // 画面遷移
-  // useNavigateは、React Routerのフックで、プログラム的に画面遷移を行うために使用されます。
+  // 一覧へ戻るために使う
+  // これにより、navigate関数が呼び出され、ユーザーの作成が成功した後にユーザー一覧ページへ遷移することができます。
   const navigate = useNavigate()
-  // フォームの送信処理
-  // これにより、ユーザーがフォームを送信したときにhandleSubmit関数が呼び出されます。
-  const handleSubmit = async (e: React.FormEvent) => {
 
-    // ページリロード防止
-    // これにより、フォームが送信されたときにページがリロードされるのを防ぎます。これにより、ユーザーが入力したデータが失われるのを防ぐことができます。
+  // useUsers hook を利用して一覧再取得可能
+  const { loadUsers } = useUsers()
+  
+  // フォームの送信処理
+  // これにより、フォームが送信されたときにhandleSubmit関数が呼び出されます。
+  // ユーザーの作成処理を行い、成功した場合はユーザー一覧を再取得して最新状態にし、その後一覧画面へ遷移します。
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-      // API呼び出し
-      // これにより、createUser関数が呼び出され、ユーザーの名前を引数として渡すことで新しいユーザーが作成されます。
+    try {
+      // 新規作成
       await createUser(name)
-
-      // 一覧ページへ戻る
+      // 作成後、一覧を再取得して最新状態に
+      await loadUsers()
+      // 一覧画面へ戻る
       navigate("/")
-
+    } catch {
+      alert("ユーザー作成失敗")
+    }
   }
 
   return (
-
     <div>
-
       <h1>User New</h1>
 
       <UserForm
@@ -51,8 +61,6 @@ export default function UserNewPage() {
       />
 
       <Link to="/">一覧へ戻る</Link>
-
     </div>
-
   )
 }
