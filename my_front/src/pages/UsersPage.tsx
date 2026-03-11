@@ -26,6 +26,8 @@ export default function UsersPage() {
   }
 
   // 自動検索：入力後 5秒経ったら検索
+  // これにより、ユーザーが検索入力を行った後、5秒間入力がない場合に自動的に検索が実行されます。
+  // debouncedQueryが更新されると、loadUsers関数が呼び出され、ユーザーの一覧が更新されます。
   useEffect(() => {
     if (debouncedQuery !== "") {
       setPage(1)
@@ -33,10 +35,13 @@ export default function UsersPage() {
     }
   }, [debouncedQuery, loadUsers, setPage])
 
-  // ページやソート変更時
+  // 2. 【ページやソートが切り替わった時】だけ、その条件で再取得
   useEffect(() => {
-    loadUsers(query)
-  }, [page, sort, loadUsers, query])
+    // ここでは query ではなく、確定した debouncedQuery を使うのがポイントです
+    loadUsers(debouncedQuery)
+  
+  // 警告を消すために、使っている変数をすべて配列に入れます
+}, [page, sort, loadUsers, debouncedQuery]) 
 
   if (loading) return <Loading />
   if (error) return <ErrorMessage message={error} />
