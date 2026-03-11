@@ -1,0 +1,19 @@
+.search-container {
+  margin-top: 10px;
+}
+
+.sort-container {
+  margin-top: 10px;
+}
+
+.users-list {
+  margin-top: 10px;
+}
+
+.pagination {
+  margin-top: 10px;
+}
+
+.pagination span {
+  margin: 0 10px;
+}

@@ -98,7 +98,7 @@ export default function UserDetailPage() {
       // 更新
       await updateUser(id, name)
       // 更新後、一覧再取得
-      await loadUsers()
+      await loadUsers("")
       // 一覧画面へ戻る
       navigate("/")
     } catch {

@@ -41,7 +41,7 @@ export default function UserNewPage() {
       // 新規作成
       await createUser(name)
       // 作成後、一覧を再取得して最新状態に
-      await loadUsers()
+      await loadUsers("")
       // 一覧画面へ戻る
       navigate("/")
     } catch {

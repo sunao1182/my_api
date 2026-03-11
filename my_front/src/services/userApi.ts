@@ -3,10 +3,25 @@
 import type { User } from "../types/user"
 
 // ユーザー一覧取得
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (
+  search = "",
+  sort: "id" | "name" = "id",
+  page = 1,
+  perPage = 5
+): Promise<User[]> => {
+
+  // クエリパラメータを作成
+  // これにより、APIに渡すクエリパラメータが作成されます。
+  // search、sort、page、perPageの値がURLSearchParamsオブジェクトに追加され、API呼び出しのURLにクエリパラメータとして付加されます。
+  const query = new URLSearchParams({
+    search,
+    sort,
+    page: page.toString(),
+    per_page: perPage.toString()
+  })
 
   // Rails APIへアクセス
-  const res = await fetch("http://localhost:3000/api/users")
+  const res = await fetch(`http://localhost:3000/api/users?${query.toString()}`)
 
   // エラー判定
   if (!res.ok) {

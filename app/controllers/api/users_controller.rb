@@ -3,7 +3,12 @@ class Api::UsersController < ApplicationController
   # ユーザー一覧を返すAPI
   def index
     users = User.all
-
+    # 例えば、http://localhost:3000/api/users?search=テスト&sort=name&per_page=10&page=1 にアクセスすると、名前に「テスト」を含むユーザーの一覧が、名前の昇順で、1ページあたり10件表示されます。
+    users = users.where("name LIKE ?", "%#{params[:search]}%") if params[:search].present?
+    # 例えば、http://localhost:3000/api/users?sort=name にアクセスすると、ユーザーの一覧が名前の昇順で表示されます。sortパラメータにidを指定すると、IDの昇順で表示されます。
+    users = users.order(params[:sort] || :id)
+    # 例えば、http://localhost:3000/api/users?per_page=10&page=2 にアクセスすると、ユーザーの一覧が1ページあたり10件表示され、2ページ目のユーザーが表示されます。つまり、11件目から20件目までのユーザーが表示されます。
+    users = users.limit(params[:per_page]).offset((params[:page].to_i - 1) * params[:per_page].to_i)
     # React側で扱いやすいように、必要な項目だけJSONで返す
     # 例えば、APIから返すJSONの形式は、[{ id: 1, name: "テスト太郎" }, { id: 2, name: "テスト花子" }] のような形式になります。
     render json: users, only: [:id, :name]
