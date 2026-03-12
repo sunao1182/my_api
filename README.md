@@ -135,3 +135,43 @@ useUsers
 userApi
 
 です。
+
+### useStateとuseUsersの説明
+useState = データ保管庫
+useUsers = 処理のまとまり
+
+Reactを完全理解する最重要図
+
+コードをそのまま図にするとこれです。
+
+UsersPage.tsx
+   │
+   │ useUsers()
+   ▼
+useUsers.ts
+   │
+   │ fetchUsers()
+   ▼
+userApi.ts
+   │
+   │ HTTP
+   ▼
+Rails API
+   │
+   ▼
+DB
+
+
+|:------|:-----:|
+|useState   |データを保存   |
+|useEffect   |画面が開いたときの処理   |
+|useCallback   |関数をキャッシュ   |
+
+## UsersとArticles
+今の users 機能とほぼ同じです。
+
+Users機能
+Page → Hook → Service → Rails API → DB
+
+Articles機能
+Page → Hook → Service → Rails API → DB

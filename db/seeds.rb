@@ -12,3 +12,17 @@ User.destroy_all
 User.create!(name: "山田太郎")
 User.create!(name: "田中花子")
 User.create!(name: "鈴木一郎")
+
+user = User.first
+
+Article.create!(
+  title: "React学習記録",
+  body: "React Hooksの理解を進めた",
+  user: user
+)
+
+Article.create!(
+  title: "Rails API学習",
+  body: "API設計の基本を学習",
+  user: user
+)
