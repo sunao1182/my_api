@@ -1,72 +1,78 @@
-class Api::UsersController < ApplicationController
+module Api
+  class UsersController < ApplicationController
+    # 1. ログインしていないと、どの操作もできないようにする
+    before_action :authenticate_user!
 
-  # ユーザー一覧を返すAPI
-  def index
-    users = User.all
-    # 例えば、http://localhost:3000/api/users?search=テスト&sort=name&per_page=10&page=1 にアクセスすると、名前に「テスト」を含むユーザーの一覧が、名前の昇順で、1ページあたり10件表示されます。
-    users = users.where("name LIKE ?", "%#{params[:search]}%") if params[:search].present?
-    # 例えば、http://localhost:3000/api/users?sort=name にアクセスすると、ユーザーの一覧が名前の昇順で表示されます。sortパラメータにidを指定すると、IDの昇順で表示されます。
-    users = users.order(params[:sort] || :id)
-    # 例えば、http://localhost:3000/api/users?per_page=10&page=2 にアクセスすると、ユーザーの一覧が1ページあたり10件表示され、2ページ目のユーザーが表示されます。つまり、11件目から20件目までのユーザーが表示されます。
-    users = users.limit(params[:per_page]).offset((params[:page].to_i - 1) * params[:per_page].to_i)
-    # React側で扱いやすいように、必要な項目だけJSONで返す
-    # 例えば、APIから返すJSONの形式は、[{ id: 1, name: "テスト太郎" }, { id: 2, name: "テスト花子" }] のような形式になります。
-    render json: users, only: [:id, :name]
-  end
+    # ユーザー一覧を返すAPI
+    def index
+      users = User.all
 
-  # showアクションは、ユーザーのIDをURLパラメータから取得し、そのIDに対応するユーザーをデータベースから検索します。
-  # 見つかったユーザーのIDと名前をJSON形式でレスポンスとして返します。
-  def show
-    # 例えば、http://localhost:3000/api/users/1 にアクセスすると、IDが1のユーザーの情報がJSON形式で返されます。
-    user = User.find(params[:id])
-    # 返すJSONの形式は、{ id: user.id, name: user.name } となります。
-    render json: user
-  end
+      # 名前検索
+      if params[:search].present?
+        users = users.where("name LIKE ?", "%#{params[:search]}%")
+      end
 
-  # ユーザー新規作成API
-  def create
-    user = User.new(user_params)
-    # ユーザーの保存に成功した場合は、保存されたユーザーのIDと名前をJSON形式で返し、HTTPステータスコード201 Createdを返します。
-    if user.save
-      render json: user, status: :created
-    else
-      # ユーザーの保存に失敗した場合は、エラーメッセージをJSON形式で返し、HTTPステータスコード422 Unprocessable Entityを返します。
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      # 並び替え・ページネーション処理（既存のまま）
+      allowed_sorts = %w[id name email]
+      sort_column = allowed_sorts.include?(params[:sort]) ? params[:sort] : "id"
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
+      users = users.order(sort_column).limit(per_page).offset((page - 1) * per_page)
+
+      # 安全のため項目を絞って返す
+      render json: users, only: [:id, :name, :email]
     end
-  end
 
-  # 更新
-  def update
-    # 更新対象ユーザー取得
-    user = User.find(params[:id])
-
-    # 更新成功時
-    if user.update(user_params)
-      render json: user, status: :ok
-    else
-      # バリデーションエラー時
-      render json: {
-        errors: user.errors.full_messages
-      }, status: :unprocessable_entity
+    # ユーザー詳細取得API（ログイン済みなら誰の詳細も見られる）
+    def show
+      user = User.find(params[:id])
+      render json: user, only: [:id, :name, :email]
     end
-  end
 
-  # 削除
-  def destroy
-    # idに一致するユーザーを取得
-    user = User.find(params[:id])
+    # ユーザー新規作成API
+    # ※もし「誰でも会員登録できる」ようにするなら、ここだけ認証を除外する設定が必要です
+    def create
+      user = User.new(user_params)
+      if user.save
+        render json: user, status: :created
+      else
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
 
-    # 削除実行
-    user.destroy
+    # ユーザー更新API
+    def update
+      user = User.find(params[:id])
 
-    # 削除成功メッセージを返す
-    render json: { message: "User deleted successfully" }
-  end
+      # 2. 本人確認：自分以外のデータは編集できないようにする
+      if user.id != current_user.id
+        return render json: { error: "他のユーザー情報は編集できません" }, status: :forbidden
+      end
 
-  
-  private
+      if user.update(user_params)
+        render json: user, status: :ok
+      else
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
 
-  def user_params
-    params.require(:user).permit(:name)
+    # ユーザー削除API
+    def destroy
+      user = User.find(params[:id])
+
+      # 3. 本人確認：自分以外のデータは削除できないようにする
+      if user.id != current_user.id
+        return render json: { error: "他のユーザー情報は削除できません" }, status: :forbidden
+      end
+
+      user.destroy
+      render json: { message: "User deleted successfully" }
+    end
+
+    private
+
+    def user_params
+      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    end
   end
 end

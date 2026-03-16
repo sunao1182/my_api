@@ -1,39 +1,55 @@
 // articleApi.tsは、記事に関連するAPI呼び出しをまとめたファイルです。
-// これにより、記事の一覧取得、詳細取得、作成などの操作を簡単に行うことができます。
 import type { Article } from "../types/article"
 
 // APIのベースURLを定義
 const API_BASE = "http://localhost:3000/api/articles"
 
+/**
+ * 共通機能：認証用ヘッダーを作成する
+ * ブラウザの保存スペース（localStorage）からトークンを取り出し、
+ * サーバーに「ログイン済み」であることを伝えるための情報をセットします。
+ */
+function getAuthHeaders() {
+  const token = localStorage.getItem("token")
+
+  return {
+    "Content-Type": "application/json",
+    // Rails側でJWTを認識させるための形式（Bearer トークン）
+    "Authorization": `Bearer ${token}`,
+  }
+}
+
 // 記事一覧取得
-// これにより、fetchArticles関数が定義されます。APIから記事の一覧を取得し、Article型の配列を返します。
 export async function fetchArticles(): Promise<Article[]> {
-  const res = await fetch(API_BASE)
+  // headersに認証情報を追加
+  const res = await fetch(API_BASE, {
+    headers: getAuthHeaders(),
+  })
+
   if (!res.ok) throw new Error("記事一覧取得失敗")
   return res.json()
 }
 
 // 記事詳細取得
-// これにより、fetchArticle関数が定義されます。APIから指定されたIDの記事の詳細を取得し、Article型のオブジェクトを返します。
 export async function fetchArticle(id: number): Promise<Article> {
-  const res = await fetch(`${API_BASE}/${id}`)
+  // headersに認証情報を追加
+  const res = await fetch(`${API_BASE}/${id}`, {
+    headers: getAuthHeaders(),
+  })
+
   if (!res.ok) throw new Error("記事詳細取得失敗")
   return res.json()
 }
 
 // 記事作成
-// これにより、createArticle関数が定義されます。APIに新しい記事のデータを送信して記事を作成し、
-// 作成された記事の詳細をArticle型のオブジェクトとして返します。
 export async function createArticle(article: {
   title: string
   body: string
-  user_id: number
 }): Promise<Article> {
   const res = await fetch(API_BASE, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    // 共通関数を使ってヘッダーをセット
+    headers: getAuthHeaders(),
     body: JSON.stringify({ article }),
   })
 
@@ -47,14 +63,12 @@ export async function updateArticle(
   article: {
     title: string
     body: string
-    user_id: number
   }
 ): Promise<Article> {
   const res = await fetch(`${API_BASE}/${id}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    // 共通関数を使ってヘッダーをセット
+    headers: getAuthHeaders(),
     body: JSON.stringify({ article }),
   })
 
@@ -69,6 +83,8 @@ export async function updateArticle(
 export async function deleteArticle(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/${id}`, {
     method: "DELETE",
+    // 削除時も「誰が消そうとしているか」の証明が必要
+    headers: getAuthHeaders(),
   })
 
   if (!res.ok) {

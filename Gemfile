@@ -19,7 +19,10 @@ gem "rack-cors"
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
+# jwtは、JSON Web Tokenを生成・検証するためのライブラリです。
+# これを使用することで、ユーザー認証やセッション管理を行うことができます。
+gem "jwt"
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

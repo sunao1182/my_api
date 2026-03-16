@@ -1,41 +1,98 @@
-// Router機能をimport
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-// ユーザー関連ページ
+import LoginPage from "./pages/LoginPage"
+
 import UsersPage from "./pages/UsersPage"
 import UserNewPage from "./pages/UserNewPage"
 import UserDetailPage from "./pages/UserDetailPage"
+import UserEditPage from "./pages/UserEditPage"
 
-// 記事関連ページ
 import ArticlesPage from "./pages/ArticlesPage"
 import ArticleNewPage from "./pages/ArticleNewPage"
 import ArticleDetailPage from "./pages/ArticleDetailPage"
 import ArticleEditPage from "./pages/ArticleEditPage"
 
-// アプリのルーティング定義
+import RequireAuth from "./components/RequireAuth"
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ユーザー一覧ページ */}
-        <Route path="/" element={<UsersPage />} />
+        {/* ログイン画面 */}
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
 
-        {/* ユーザー新規作成 */}
+        {/* ユーザー系 */}
+        <Route
+          path="/users/:id"
+          element={
+            <RequireAuth>
+              <UserDetailPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <RequireAuth>
+              <UsersPage />
+            </RequireAuth>
+          }
+        />
         <Route path="/users/new" element={<UserNewPage />} />
+        <Route
+          path="/users/:id"
+          element={
+            <RequireAuth>
+              <UserDetailPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/users/:id/edit"
+          element={
+            <RequireAuth>
+              <UserEditPage />
+            </RequireAuth>
+          }
+        />
 
-        {/* ユーザー詳細 */}
-        <Route path="/users/:id" element={<UserDetailPage />} />
+        {/* 記事系はログイン必須 */}
+        <Route
+          path="/articles"
+          element={
+            <RequireAuth>
+              <ArticlesPage />
+            </RequireAuth>
+          }
+        />
 
-        {/* 記事一覧ページ */}
-        <Route path="/articles" element={<ArticlesPage />} />
+        <Route
+          path="/articles/new"
+          element={
+            <RequireAuth>
+              <ArticleNewPage />
+            </RequireAuth>
+          }
+        />
 
-        {/* 記事新規作成 */}
-        <Route path="/articles/new" element={<ArticleNewPage />} />
+        <Route
+          path="/articles/:id"
+          element={
+            <RequireAuth>
+              <ArticleDetailPage />
+            </RequireAuth>
+          }
+        />
 
-        {/* 記事詳細 */}
-        <Route path="/articles/:id" element={<ArticleDetailPage />} />
-        {/* 記事編集 */}
-        <Route path="/articles/:id/edit" element={<ArticleEditPage />} />
+        <Route
+          path="/articles/:id/edit"
+          element={
+            <RequireAuth>
+              <ArticleEditPage />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

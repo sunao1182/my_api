@@ -1,4 +1,7 @@
 class Api::ArticlesController < ApplicationController
+  # 記事APIはログイン済みユーザーのみ利用可能にする
+  before_action :authenticate_user!
+
   # 記事一覧
   def index
     articles = Article.includes(:user).order(created_at: :desc)
@@ -13,7 +16,9 @@ class Api::ArticlesController < ApplicationController
 
   # 記事作成
   def create
-    article = Article.new(article_params)
+    # user_id はフロントから受け取らず、
+    # ログイン中のユーザーを記事の作成者にする
+    article = current_user.articles.new(article_params)
 
     if article.save
       render json: article.as_json(include: { user: { only: [:id, :name] } }), status: :created
@@ -24,10 +29,10 @@ class Api::ArticlesController < ApplicationController
 
   # 記事更新
   def update
-    article = Article.find(params[:id])
+    article = current_user.articles.find(params[:id])
 
     if article.update(article_params)
-      render json: article
+      render json: article.as_json(include: { user: { only: [:id, :name] } })
     else
       render json: { errors: article.errors.full_messages }, status: :unprocessable_entity
     end
@@ -35,7 +40,7 @@ class Api::ArticlesController < ApplicationController
 
   # 記事削除
   def destroy
-    article = Article.find(params[:id])
+    article = current_user.articles.find(params[:id])
     article.destroy
 
     render json: { message: "記事を削除しました" }
@@ -44,6 +49,7 @@ class Api::ArticlesController < ApplicationController
   private
 
   def article_params
-    params.require(:article).permit(:title, :body, :user_id)
+    # user_id は受け取らない
+    params.require(:article).permit(:title, :body)
   end
 end

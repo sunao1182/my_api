@@ -10,7 +10,6 @@ export default function ArticleNewPage() {
   const handleCreate = async (data: {
     title: string
     body: string
-    user_id: number
   }) => {
     await createArticle(data)
 

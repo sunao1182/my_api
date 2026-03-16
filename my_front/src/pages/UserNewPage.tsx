@@ -1,44 +1,40 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
+// ユーザー新規作成ページ
+// ユーザーを新規作成するためのページコンポーネントです。
+import { Link, useNavigate } from "react-router-dom"
+// UserFormコンポーネントをインポートします。
+// これにより、ユーザーの新規作成や編集に使用するフォームコンポーネントがこのページで使用できるようになります。
 import UserForm from "../components/UserForm"
+// createUser関数をインポートします。
+// これにより、ユーザーを新規作成するためのAPI呼び出しがこのページで使用できるようになります。
+import { createUser } from "../services/userApi"
 
-// 1件用 hook
-import useUser from "../hooks/useUser"
-
+// 画面遷移用
 export default function UserNewPage() {
-  const [name, setName] = useState("")
+  // useNavigateは、React Routerのフックで、プログラム的に画面遷移を行うために使用されます。
   const navigate = useNavigate()
 
-  // ここで hook を呼ぶ
-  const { handleCreate, loading, error } = useUser()
+  // ユーザー作成処理
+  const handleCreate = async (data: {
+    name: string
+    email: string
+    password: string
+    password_confirmation: string
+  }) => {
+    await createUser(data)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    // 新規作成
-    const createdUser = await handleCreate(name)
-
-    // 成功したら一覧へ戻る
-    if (createdUser) {
-      navigate("/")
-    }
+    // 作成後はユーザー一覧へ戻る
+    navigate("/users")
   }
 
   return (
     <div>
-      <h1>User New</h1>
+      <h1>ユーザー新規作成</h1>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      <UserForm onSubmit={handleCreate} />
 
-      <UserForm
-        name={name}
-        onChange={setName}
-        onSubmit={handleSubmit}
-        buttonText="作成"
-      />
-
-      <Link to="/">一覧へ戻る</Link>
+      <div style={{ marginTop: "16px" }}>
+        <Link to="/users">ユーザー一覧へ戻る</Link>
+      </div>
     </div>
   )
 }

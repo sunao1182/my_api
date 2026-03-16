@@ -1,28 +1,35 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-# 既存データを一旦削除
+Article.destroy_all
 User.destroy_all
 
-# 一覧表示確認用のサンプルデータ
-User.create!(name: "山田太郎")
-User.create!(name: "田中花子")
-User.create!(name: "鈴木一郎")
+yamada = User.create!(
+  name: "山田太郎",
+  email: "test@example.com",
+  password: "password123",
+  password_confirmation: "password123"
+)
 
-user = User.first
+tanaka = User.create!(
+  name: "田中花子",
+  email: "user2@example.com",
+  password: "password123",
+  password_confirmation: "password123"
+)
+
+suzuki = User.create!(
+  name: "鈴木一郎",
+  email: "user3@example.com",
+  password: "password123",
+  password_confirmation: "password123"
+)
 
 Article.create!(
   title: "React学習記録",
   body: "React Hooksの理解を進めた",
-  user: user
+  user: yamada
 )
 
 Article.create!(
   title: "Rails API学習",
   body: "API設計の基本を学習",
-  user: user
+  user: yamada
 )

@@ -1,17 +1,14 @@
 import { useState } from "react"
-import type { User } from "../types/user"
 import { fetchUser, createUser, updateUser } from "../services/userApi"
+import type { User } from "../types/user"
 
 export default function useUser() {
-  // 1件分のユーザー
   const [user, setUser] = useState<User | null>(null)
-
-  // 共通状態
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // 詳細取得
-  const loadUser = async (id: string) => {
+  const loadUser = async (id: number) => {
     try {
       setLoading(true)
       setError(null)
@@ -26,12 +23,17 @@ export default function useUser() {
   }
 
   // 新規作成
-  const handleCreate = async (name: string) => {
+  const handleCreate = async (userData: {
+    name: string
+    email: string
+    password: string
+    password_confirmation: string
+  }) => {
     try {
       setLoading(true)
       setError(null)
 
-      const data = await createUser(name)
+      const data = await createUser(userData)
       return data
     } catch {
       setError("ユーザー作成失敗")
@@ -42,12 +44,20 @@ export default function useUser() {
   }
 
   // 更新
-  const handleUpdate = async (id: string, name: string) => {
+  const handleUpdate = async (
+    id: number,
+    userData: {
+      name: string
+      email: string
+      password?: string
+      password_confirmation?: string
+    }
+  ) => {
     try {
       setLoading(true)
       setError(null)
 
-      const data = await updateUser(id, name)
+      const data = await updateUser(id, userData)
       setUser(data)
       return data
     } catch {
@@ -64,6 +74,6 @@ export default function useUser() {
     error,
     loadUser,
     handleCreate,
-    handleUpdate
+    handleUpdate,
   }
 }
