@@ -10,7 +10,7 @@ MyBoard は、Rails API と React（TypeScript） を組み合わせて作成し
 
 このアプリでは、役割を次のように分けています。
 
-Rails
+・Rails
 
 データベースとのやり取りを行う
 
@@ -18,7 +18,7 @@ APIとしてJSONを返す
 
 認証やデータ管理を担当する
 
-React
+・React
 
 Rails APIから受け取ったデータを画面に表示する
 
@@ -145,11 +145,16 @@ before_action的な初期処理の感覚	useEffect
 
 完全な対応ではありませんが、Rails経験者が最初に全体像をつかむには有効な考え方です。
 
-🏗️ ディレクトリ構成
+```md
+## 🏗️ ディレクトリ構成
+
+```text
 my_api/
 ├─ app/
 │  ├─ channels/
 │  │  └─ application_cable/
+│  │     ├─ channel.rb
+│  │     └─ connection.rb
 │  ├─ controllers/
 │  │  ├─ api/
 │  │  │  ├─ articles_controller.rb
@@ -162,11 +167,13 @@ my_api/
 │  │  ├─ article.rb
 │  │  └─ user.rb
 │  └─ views/
+
 ├─ config/
 ├─ db/
 │  ├─ migrate/
 │  ├─ schema.rb
 │  └─ seeds.rb
+
 ├─ my_front/
 │  ├─ src/
 │  │  ├─ components/
@@ -177,7 +184,9 @@ my_api/
 │  │  ├─ App.tsx
 │  │  └─ main.tsx
 │  └─ package.json
+
 └─ README.md
+
 📂 重要フォルダの役割
 Rails側
 app/controllers/api/
