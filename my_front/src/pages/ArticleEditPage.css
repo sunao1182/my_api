@@ -1,0 +1,84 @@
+/* 編集フォーム全体のコンテナ */
+.article-edit-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.edit-title {
+  font-size: 1.8rem;
+  color: #202124;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 2px solid #f1f3f4;
+  padding-bottom: 15px;
+}
+
+/* 各入力項目のグループ */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #3c4043;
+}
+
+/* 入力フィールドの共通スタイル */
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box; /* 幅を100%に収める */
+}
+
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+
+.form-textarea {
+  resize: vertical; /* 縦方向のみリサイズ可 */
+  min-height: 200px;
+}
+
+/* 更新ボタン */
+.btn-submit-update {
+  width: 100%;
+  background-color: #1a73e8;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit-update:hover {
+  background-color: #174ea6;
+}
+
+.edit-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.back-to-detail {
+  color: #5f6368;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-to-detail:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,103 @@
+/* 画面全体を中央寄せにするためのラッパー */
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* 少しグレーがかった背景 */
+}
+
+/* ログインカード */
+.login-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* カードの最大幅 */
+  text-align: center;
+}
+
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a73e8;
+  margin-bottom: 30px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3c4043;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+}
+
+.error-message {
+  color: #d93025;
+  background-color: #fce8e6;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.btn-login-submit {
+  background-color: #1a73e8;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.btn-login-submit:hover {
+  background-color: #174ea6;
+}
+
+.login-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f3f4;
+}
+
+.register-link {
+  color: #1a73e8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}

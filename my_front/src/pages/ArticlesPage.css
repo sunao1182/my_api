@@ -1,0 +1,71 @@
+/* ページ全体のコンテナ */
+.articles-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* controls-container はそのまま（ボタンを右に置くため） */
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* 上揃えに変更 */
+  margin-bottom: 24px;
+}
+
+/* ★検索とソートを縦に並べる */
+.search-sort-column {
+  display: flex;
+  flex-direction: column; /* 縦並びにする魔法の1行 */
+  gap: 12px;              /* 検索窓とセレクトボックスの間の余白 */
+}
+
+.search-input {
+  width: 250px;           /* 少し幅を広げると見やすくなります */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.sort-select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+
+/* 新規投稿ボタン（Railsのボタン風） */
+.btn-new {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-new:hover {
+  background-color: #0056b3;
+}
+
+/* 記事リスト（ドットを消す） */
+.articles-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ページネーション */
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  cursor: pointer;
+}

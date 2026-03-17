@@ -12,28 +12,37 @@ export default function useArticles() {
   // エラーメッセージ
   const [error, setError] = useState<string | null>(null)
 
+  // 並び替えとページ番号
+  const [sort, setSort] = useState<"id" | "title">("id")
+  const [page, setPage] = useState(1)
+
+  // 1ページあたりの件数
+  const perPage = 5
+
   // 記事一覧を取得する関数
-  const loadArticles = useCallback(async () => {
+  const loadArticles = useCallback(
+   async (search: string) => {
     try {
       setLoading(true)
       setError(null)
 
-      const data = await fetchArticles()
+      const data = await fetchArticles(search, sort, page, perPage)
       setArticles(data)
     } catch {
       setError("記事一覧の取得に失敗しました")
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [sort, page, perPage])
 
   // 記事削除
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number, search: string) => {
     try {
       setError(null)
+      
 
       await deleteArticle(id)
-      await loadArticles()
+      await loadArticles(search)
     } catch {
       setError("記事削除に失敗しました")
     }
@@ -45,6 +54,10 @@ export default function useArticles() {
     loading,
     error,
     loadArticles,
-    handleDelete
+    handleDelete,
+    sort,
+    setSort,
+    page,
+    setPage,
   }
 }

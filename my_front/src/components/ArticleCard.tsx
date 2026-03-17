@@ -1,49 +1,60 @@
 import { Link } from "react-router-dom"
-// ArticleCardコンポーネントは、記事の情報を表示するためのコンポーネントです。
 import type { Article } from "../types/article"
+import { getLoginUser } from "../services/authStorage"
+import "./ArticleCard.css"
 
-// Propsの型を定義
-// Propsとは、コンポーネントに渡されるデータのことです。
-// ここでは、ArticleCardコンポーネントが受け取るpropsの型を定義しています。
-// articleはArticle型のオブジェクトで、記事の情報を含みます。
+// 親から受け取るデータの型定義
 type Props = {
   article: Article
-  // onDeleteは、記事を削除するための関数で、記事のIDを引数として受け取ります。
-  // これにより、ArticleCardコンポーネントが記事の削除機能を提供できるようになります。
-  // ユーザーが削除ボタンをクリックしたときにonDelete関数が呼び出され、記事のIDが渡されます。
   onDelete: (id: number) => Promise<void>
 }
 
-// ArticleCardコンポーネントを定義
-// これにより、ArticleCardコンポーネントが定義されます。
-// 記事のタイトル、投稿者の名前、本文を表示し、タイトルは記事の詳細ページへのリンクになっています。
 export default function ArticleCard({ article, onDelete }: Props) {
+  // 1. 権限チェック (Railsの current_user との比較に相当)
+  const loginUser = getLoginUser()
+  const isOwner = loginUser && loginUser.id === article.user.id
+
+  // 2. 削除実行前の確認ダイアログ
   const handleClickDelete = async () => {
-    // 削除の確認ダイアログを表示します。
-    // ユーザーが「OK」をクリックした場合はtrueが返され、「キャンセル」をクリックした場合はfalseが返されます。
+    // Railsの data: { confirm: "..." } と同じ役割
     const ok = window.confirm("この記事を削除しますか？")
-    // ユーザーが「キャンセル」をクリックした場合は、削除処理を中止します。
-    if (!ok) return
-    // onDelete関数を呼び出して、記事のIDを渡します。
-    // これにより、記事の削除処理が実行されます。
-    await onDelete(article.id)
+    if (ok) {
+      await onDelete(article.id)
+    }
   }
 
   return (
-    <li style={{ marginBottom: "16px" }}>
-      <Link to={`/articles/${article.id}`}>
-        <strong>{article.title}</strong>
-      </Link>
+    <li className="article-card-item">
+      {/* 記事のヘッダー部分 */}
+      <div className="article-header">
+        <Link to={`/articles/${article.id}`} className="article-title">
+          <strong>{article.title}</strong>
+        </Link>
+        <span className="article-author">投稿者: {article.user.name}</span>
+      </div>
 
-      <div>投稿者: {article.user.name}</div>
+      {/* 記事の本文 (プレビューとして表示) */}
+      <div className="article-body">
+        {article.body}
+      </div>
 
-      <div>{article.body}</div>
+      {/* 操作アクション (詳細・編集・削除) */}
+      <div className="article-actions">
+        <Link to={`/articles/${article.id}`} className="action-link">
+          詳細を見る
+        </Link>
 
-      <div style={{ marginTop: "8px", display: "flex", gap: "8px" }}>
-        <Link to={`/articles/${article.id}/edit`}>編集</Link>
-        <button onClick={handleClickDelete}>
-          削除
-        </button>
+        {/* 自分の記事のときだけ、編集と削除の権利を与える */}
+        {isOwner && (
+          <div className="owner-actions">
+            <Link to={`/articles/${article.id}/edit`} className="action-link edit">
+              編集
+            </Link>
+            <button className="btn-delete" onClick={handleClickDelete}>
+              削除
+            </button>
+          </div>
+        )}
       </div>
     </li>
   )

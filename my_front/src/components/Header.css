@@ -1,0 +1,90 @@
+.main-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  /* paddingを左右20px固定ではなく、内側に収まるように調整 */
+  box-sizing: border-box; 
+}
+
+.header-inner {
+  max-width: 1000px; /* 少し狭めて確実に収まるように */
+  margin: 0 auto;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px; /* 内側の余白 */
+}
+
+.header-logo a {
+  font-size: 1.2rem; /* 少し小さく */
+  font-weight: 900;
+  color: #1a73e8;
+  text-decoration: none;
+  flex-shrink: 0; /* ロゴが潰れないように固定 */
+}
+
+.nav-group {
+  display: flex;
+  gap: 15px; /* 間隔を狭く */
+  margin: 0 10px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #5f6368;
+  font-size: 0.9rem; /* 少し小さく */
+  font-weight: 600;
+  padding: 5px 0;
+  white-space: nowrap; /* 改行させない */
+}
+
+/* 右側のユーザーエリアをひとまとめにする */
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 1; /* 画面が狭い時に縮むことを許可 */
+  min-width: 0; /* はみ出し防止 */
+}
+
+.user-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #3c4043;
+  overflow: hidden; /* はみ出した名前を隠す準備 */
+}
+
+.user-name-text {
+  font-size: 0.85rem;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* 名前が長すぎる場合は「...」にする */
+  overflow: hidden;
+  max-width: 80px; /* 名前の最大幅を制限して、他の要素を圧迫しないようにする */
+}
+
+.btn-logout {
+  background: #f1f3f4;
+  border: none;
+  color: #5f6368;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* ★レスポンシブ対応：画面がさらに狭い場合（スマホなど） */
+@media (max-width: 600px) {
+  .user-name-text {
+    display: none; /* スマホサイズでは名前を消してアイコンだけにする */
+  }
+  .nav-group {
+    gap: 10px;
+  }
+}

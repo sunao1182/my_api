@@ -4,68 +4,81 @@ import { fetchUser } from "../services/userApi"
 import type { User } from "../types/user"
 import Loading from "../components/Loading"
 import ErrorMessage from "../components/ErrorMessage"
+import Header from "../components/Header" // ヘッダーを追加
+import "./UserDetailPage.css" // CSSをインポート
 
 export default function UserDetailPage() {
-  // URLパラメータからユーザーIDを取得する
   const { id } = useParams()
-
-  // ユーザー詳細を保持する
   const [user, setUser] = useState<User | null>(null)
-
-  // ローディング状態
   const [loading, setLoading] = useState(true)
-
-  // エラーメッセージ
   const [error, setError] = useState<string | null>(null)
 
-  // localStorage からログインユーザー情報を取得する
+  // ログイン中ユーザー情報の取得 (Railsの current_user 相当)
   const loginUser = JSON.parse(localStorage.getItem("loginUser") || "null")
 
   useEffect(() => {
     const loadUser = async () => {
       try {
         if (!id) return
-
         setLoading(true)
-        setError(null)
-
-        // useParams で取得した id は string なので number に変換する
         const data = await fetchUser(Number(id))
         setUser(data)
       } catch {
-        setError("ユーザー取得失敗")
+        setError("ユーザー情報の取得に失敗しました")
       } finally {
         setLoading(false)
       }
     }
-
     loadUser()
   }, [id])
 
   if (loading) return <Loading />
   if (error) return <ErrorMessage message={error} />
-  if (!user) return <p>ユーザーが見つかりません</p>
+  if (!user) return <div className="user-detail-container">ユーザーが見つかりません</div>
 
-  // ログイン中ユーザー本人のページかどうかを判定する
+  // 本人のページかどうか (Railsの current_user == @user 相当)
   const isMyPage = loginUser && loginUser.id === user.id
 
   return (
-    <div>
-      <h1>ユーザー詳細</h1>
+    <div className="page-wrapper">
+      <Header />
+      
+      <div className="user-detail-container">
+        {/* 名前の頭文字をアイコン風に表示 */}
+        <div className="user-avatar-circle">
+          {user.name.charAt(0).toUpperCase()}
+        </div>
 
-      <p>ID: {user.id}</p>
-      <p>名前: {user.name}</p>
-      <p>メールアドレス: {user.email}</p>
+        <h1 className="user-detail-title">
+          {isMyPage ? "マイプロフィール" : `${user.name} さんの詳細`}
+        </h1>
 
-      <div style={{ marginTop: "16px" }}>
-        {/* 本人のときだけ編集リンクを表示する */}
-        {isMyPage && (
-          <div style={{ marginBottom: "12px" }}>
-            <Link to={`/users/${user.id}/edit`}>自分の情報を編集する</Link>
+        <div className="user-profile-info">
+          <div className="info-item">
+            <span className="info-label">ユーザーID</span>
+            <span className="info-value">{user.id}</span>
           </div>
-        )}
+          <div className="info-item">
+            <span className="info-label">お名前</span>
+            <span className="info-value">{user.name}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">メールアドレス</span>
+            <span className="info-value">{user.email}</span>
+          </div>
+        </div>
 
-        <Link to="/users">ユーザー一覧へ戻る</Link>
+        <div className="user-detail-actions">
+          {isMyPage && (
+            <Link to={`/users/${user.id}/edit`} className="btn-edit-profile">
+              プロフィールを編集する
+            </Link>
+          )}
+          
+          <Link to="/users" className="back-link">
+            ← ユーザー一覧へ戻る
+          </Link>
+        </div>
       </div>
     </div>
   )

@@ -20,9 +20,22 @@ function getAuthHeaders() {
 }
 
 // 記事一覧取得
-export async function fetchArticles(): Promise<Article[]> {
-  // headersに認証情報を追加
-  const res = await fetch(API_BASE, {
+export async function fetchArticles(
+  query = "",
+  sort = "id",
+  page = 1,
+  perPage = 10
+): Promise<Article[]> {
+  const params = new URLSearchParams({
+    // ★Rails側(params[:query])に合わせてキーを "query" にする
+    query: query,       
+    sort: sort,
+    page: String(page),
+    // ★Rails側(params[:perPage])に合わせてキーを "perPage" にする
+    perPage: String(perPage), 
+  })
+
+  const res = await fetch(`${API_BASE}?${params.toString()}`, {
     headers: getAuthHeaders(),
   })
 

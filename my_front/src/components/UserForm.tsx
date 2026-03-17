@@ -1,12 +1,6 @@
-// ユーザーフォームコンポーネント
-// ユーザーの新規作成や編集に使用するフォームコンポーネントです。
 import { useState } from "react"
+import "./UserForm.css" // CSSをインポート
 
-// Propsの型定義
-// Propsとは、コンポーネントに渡されるデータのことです。
-// ここでは、UserFormコンポーネントが受け取るpropsの型を定義しています。
-// onSubmitは、フォームが送信されたときに呼び出される関数で、ユーザーのデータを引数として受け取ります。
-// initialValuesは、フォームの初期値を指定するためのオプションのプロパティで、ユーザーの名前とメールアドレスを含むオブジェクトです。
 type Props = {
   onSubmit: (data: {
     name: string
@@ -20,50 +14,32 @@ type Props = {
   }
 }
 
-// ユーザーフォームコンポーネントを定義
-// これにより、UserFormコンポーネントが定義されます。
-// ユーザーの名前、メールアドレス、パスワード、および確認用パスワードを入力するためのフォームを提供します。
-// フォームが送信されたときには、onSubmit関数が呼び出され、ユーザーのデータが渡されます。
 export default function UserForm({ onSubmit, initialValues }: Props) {
+  // --- 1. フォームの状態管理 (Railsの f.text_field などの値に相当) ---
   const [name, setName] = useState(initialValues?.name ?? "")
   const [email, setEmail] = useState(initialValues?.email ?? "")
   const [password, setPassword] = useState("")
   const [passwordConfirmation, setPasswordConfirmation] = useState("")
   const [error, setError] = useState<string | null>(null)
 
-  // フォーム送信時の処理
-  // eは、フォーム送信イベントを表すオブジェクトで、e.preventDefault()は、フォームが送信されたときのデフォルトの動作（ページのリロードなど）を防止するために使用されます。
+  // --- 2. バリデーションと送信処理 ---
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault() // ページリロードを防止
 
-    if (!name.trim()) {
-      setError("名前を入力してください")
+    // Railsの Model Validation 相当をフロントでもチェック
+    if (!name.trim() || !email.trim()) {
+      setError("名前とメールアドレスは必須です")
       return
     }
 
-    if (!email.trim()) {
-      setError("メールアドレスを入力してください")
-      return
-    }
-
-    if (!password.trim()) {
-      setError("パスワードを入力してください")
-      return
-    }
-
-    if (!passwordConfirmation.trim()) {
-      setError("確認用パスワードを入力してください")
-      return
-    }
-
-    if (password !== passwordConfirmation) {
-      setError("パスワード確認が一致しません")
+    if (!password || password !== passwordConfirmation) {
+      setError("パスワードが一致しないか、入力されていません")
       return
     }
 
     try {
       setError(null)
-
+      // 親コンポーネント（NewPageやEditPage）から渡された関数を実行
       await onSubmit({
         name,
         email,
@@ -71,59 +47,64 @@ export default function UserForm({ onSubmit, initialValues }: Props) {
         password_confirmation: passwordConfirmation,
       })
     } catch {
-      setError("送信に失敗しました")
+      setError("サーバーへの保存に失敗しました")
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="name">名前</label>
-        <br />
+    <form className="user-form" onSubmit={handleSubmit}>
+      {/* エラーメッセージ（Railsの error_messages ヘルパー風） */}
+      {error && <p className="error-text">{error}</p>}
+
+      <div className="form-group">
+        <label className="form-label" htmlFor="name">お名前</label>
         <input
           id="name"
+          className="form-input"
           type="text"
+          placeholder="例：山田 太郎"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="email">メールアドレス</label>
-        <br />
+      <div className="form-group">
+        <label className="form-label" htmlFor="email">メールアドレス</label>
         <input
           id="email"
+          className="form-input"
           type="email"
+          placeholder="example@mail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="password">パスワード</label>
-        <br />
+      <div className="form-group">
+        <label className="form-label" htmlFor="password">パスワード</label>
         <input
           id="password"
+          className="form-input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="password_confirmation">確認用パスワード</label>
-        <br />
+      <div className="form-group">
+        <label className="form-label" htmlFor="password_confirmation">パスワード（確認用）</label>
         <input
           id="password_confirmation"
+          className="form-input"
           type="password"
           value={passwordConfirmation}
           onChange={(e) => setPasswordConfirmation(e.target.value)}
         />
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button type="submit">保存する</button>
+      <button type="submit" className="btn-save-user">
+        保存して登録する
+      </button>
     </form>
   )
 }

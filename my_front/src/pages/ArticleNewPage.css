@@ -1,0 +1,33 @@
+/* 新規投稿ページのコンテナ（編集ページと統一感を出す） */
+.article-new-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.new-title {
+  font-size: 1.8rem;
+  color: #202124;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 2px solid #34a853; /* 新規作成は「緑」のアクセント */
+  padding-bottom: 15px;
+}
+
+.new-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.back-to-index {
+  color: #5f6368;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-to-index:hover {
+  text-decoration: underline;
+}

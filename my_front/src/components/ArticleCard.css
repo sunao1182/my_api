@@ -1,0 +1,82 @@
+.article-card-item {
+  list-style: none;
+  background: #fff;
+  border-radius: 12px; /* 角を丸く */
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #eef0f2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* 軽い影 */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.article-card-item:hover {
+  transform: translateY(-2px); /* 浮き上がるアニメーション */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.article-title {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a73e8; /* リンクカラー */
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+
+.article-title:hover {
+  text-decoration: underline;
+}
+
+.article-author {
+  font-size: 0.85rem;
+  color: #70757a;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.article-body {
+  font-size: 0.95rem;
+  color: #3c4043;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  /* 3行以上は省略する設定 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 15px;
+  border-top: 1px solid #f1f3f4;
+  padding-top: 15px;
+}
+
+.action-link {
+  font-size: 0.85rem;
+  color: #5f6368;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.action-link:hover {
+  color: #1a73e8;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: #d93025; /* 削除は赤 */
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  text-decoration: underline;
+}

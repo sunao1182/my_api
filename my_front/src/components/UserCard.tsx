@@ -1,31 +1,50 @@
-// ユーザーカードコンポーネント
-// ユーザーの情報を表示するためのコンポーネントです。ユーザーのID、名前、詳細ページへのリンク、削除ボタンを表示します。
 import type { User } from "../types/user"
 import { Link } from "react-router-dom"
+import { getLoginUser } from "../services/authStorage"
+import "./UserCard.css" // ★CSSファイルを読み込む
 
-// Propsの型を定義
-// Propsとは、コンポーネントに渡されるデータのことです。
-// ここでは、UserCardコンポーネントが受け取るpropsの型を定義しています。
-// userはUser型のオブジェクトで、onDeleteはユーザーを削除するための関数です。
 type Props = {
   user: User
-  // onDeleteは、ユーザーを削除するための関数で、ユーザーのIDを引数として受け取ります。
-  // これにより、UserCardコンポーネントがユーザーの削除機能を提供できるようになります。
-  // ユーザーが削除ボタンをクリックしたときにonDelete関数が呼び出され、ユーザーのIDが渡されます。
-  onDelete: (id: number) => void
+  onDelete: () => void
 }
 
-// ユーザーカードコンポーネントを定義
-// これにより、UserCardコンポーネントが定義されます。ユーザーのIDと名前を表示し、詳細ページへのリンクと削除ボタンを提供します。
-// 削除ボタンがクリックされたときには、onDelete関数が呼び出され、ユーザーのIDが渡されます。
 export default function UserCard({ user, onDelete }: Props) {
+  const loginUser = getLoginUser()
+
+  // 自分自身のカードかどうかを判定する
+  const isMyCard = loginUser && loginUser.id === user.id
+
+  // 削除ボタンのクリックハンドラ（確認ダイアログ付き）
+  const handleClickDelete = () => {
+    const ok = window.confirm("本当にこのユーザーを削除しますか？")
+    if (ok) {
+      onDelete()
+    }
+  }
+
   return (
-    <li>
-      {user.id} : {user.name}{" "}
-      <Link to={`/users/${user.id}`}>詳細</Link>{" "}
-      {/* 削除ボタンがクリックされたときにonDelete関数が呼び出され、ユーザーのIDが渡されます。
-      これにより、ユーザーの削除処理が実行されます。 */}
-      <button onClick={() => onDelete(user.id)}>削除</button>
+    // ★isMyCardがtrueの場合、"is-me"クラスも追加して自分であることを強調できるようにする
+    <li className={`user-card-item ${isMyCard ? "is-me" : ""}`}>
+      {isMyCard && <span className="me-badge">あなた</span>}
+
+      <div className="user-info">
+        <p className="user-id">ID: {user.id}</p>
+        <h3 className="user-name">名前: {user.name}</h3>
+        <p className="user-email">メール: {user.email}</p>
+      </div>
+
+      <div className="user-actions">
+        <Link to={`/users/${user.id}`} className="detail-link">
+          詳細を見る
+        </Link>
+
+        {/* 自分のカードの時だけ削除ボタンを表示 */}
+        {isMyCard && (
+          <button className="btn-delete-user" onClick={handleClickDelete}>
+            削除
+          </button>
+        )}
+      </div>
     </li>
   )
 }
