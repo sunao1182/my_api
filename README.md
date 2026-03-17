@@ -146,7 +146,7 @@ before_action的な初期処理の感覚	useEffect
 完全な対応ではありませんが、Rails経験者が最初に全体像をつかむには有効な考え方です。
 
 ## 🏗️ ディレクトリ構成
-
+```text
 my_api/
 ├─ app/
 │  ├─ channels/
@@ -184,6 +184,7 @@ my_api/
 │  └─ package.json
 
 └─ README.md
+```
 
 📂 重要フォルダの役割
 Rails側
@@ -712,6 +713,7 @@ types = 型
 
 
 🧩 フロント構成（拡大図）
+```text
 my_front/src/
 ├─ pages/        # 画面（ルーティング単位）
 │  ├─ ArticlesPage.tsx
@@ -744,6 +746,8 @@ my_front/src/
 └─ types/        # 型定義
    ├─ article.ts
    └─ user.ts
+```
+
 🔥 データの流れ（超重要）
 【画面表示の流れ】
 
