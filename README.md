@@ -1,177 +1,95 @@
-画面で確認する場所
+Rails 5.1.7 という「APIサーバーとしての安定感」を活かしつつ、モダンな React (Vite/TypeScript) を組み合わせたこのプロジェクトは、「フロントエンドとバックエンドの役割分担」を学ぶのに最高の教材です。
+初学者がこのリポジトリを開いたときに、「ワクワクしながら学習を始められる」ような、親切で読みやすい README.md を作成しました。
+🚀 MyBoard：Rails 5 API × React 掲示板アプリ
+このプロジェクトは、Ruby on Rails (APIモード) を「データの保管場所（倉庫）」として使い、React を「表示と操作の窓口（お店）」として使う、本格的な SPA（Single Page Application） の学習用アプリです。
+「Railsの知識はあるけれど、Reactはどう動いているの？」という初学者が、コードを読み解きながらステップアップできるように設計されています。
+🏗️ プロジェクトの構造（地図）
+このアプリは「バックエンド」の中に「フロントエンド」が同居する構成になっています。
+text
+my_api/ (Rails 5.1.7)  ← 【バックエンド】データを管理する「脳」
+└─ my_front/ (React)   ← 【フロントエンド】画面を表示する「顔」
+コードは注意してご使用ください。
 
-Reactサーバーを起動して
+Railsエンジニアのための「Reactフォルダ」対応表
+Reactのフォルダを、Railsの概念に例えるとこうなります！
+Reactの場所 (my_front/src/)	Railsでの例え	役割
+pages/	views/ + controllers	各画面のメイン。HTML構造と「どんなデータを出すか」を決めます。
+components/	_partial.html.erb	ヘッダーやカードなど、複数の画面で使い回す部品です。
+hooks/	concerns / 共通ロジック	データの取得や削除などの「複雑な動き」を外出ししたものです。
+services/	APIクライアント	Rails（3000番）に「データをちょうだい」とお願いする窓口です。
+types/	schema.rb の定義	データの形（名前、メールなど）を定義し、ミスを防ぎます。
+App.tsx	routes.rb	URL（/articles など）と画面を紐付ける司令塔です。
+🛠️ 準備と起動手順
+1. バックエンド (Rails 5.1.7) を動かす
+ターミナルの「タブ1」で実行します。
+bash
+cd my_api
+bundle install
+rails db:create db:migrate db:seed
+rails s -p 3000
+コードは注意してご使用ください。
 
+役割: http://localhost:3000 で、JSONデータを配信します。
+2. フロントエンド (React / Vite) を動かす
+ターミナルの「タブ2」で実行します。
+bash
+cd my_api/my_front
+npm install
 npm run dev
+コードは注意してご使用ください。
 
-ブラウザで
+役割: http://localhost:5173 で、私たちが操作する画面を表示します。
+🎓 このアプリで学べる「5つの重要ポイント」
+API通信の仕組み:
+Railsが吐き出した「JSONデータ」を、Reactが fetch（JavaScriptの通信機能）で受け取って画面に描画する流れ。
+JWTによるログイン認証:
+パスワードではなく「トークン」という鍵をブラウザ（localStorage）に保存して、ログイン状態を維持する方法。
+高度な検索機能:
+文字を打つたびに検索が走るけれど、サーバーに負荷をかけない「デバウンス（待ち時間）」の実装。
+モダンなCSS設計:
+.css ファイルをコンポーネントごとに分け、Flexboxを使って「カード型」の綺麗なデザインを作る方法。
+TypeScriptによる安全な開発:
+「このデータは文字列、このIDは数字」と型を決めることで、エラーを未然に防ぐプロの書き方。
+🔍 コードを読んでみよう（学習ガイド）
+まずはここから：ArticlesPage.tsx
+記事一覧を表示する画面です。
+useEffect という機能を使って、画面が開いた瞬間にRailsへデータをリクエストしています。
+検索窓に文字を打つと、どうやって一覧が切り替わるのかを追ってみてください。
+部品の再利用：ArticleCard.tsx
+1つ1つの記事をカード状に見せる部品です。
+Railsの render @articles のように、map 関数を使って記事を1つずつカードに流し込んでいる様子が見られます。
+通信の裏側：services/articleApi.ts
+ここが Rails（3000番）との通信経路です。
+Rails側の ArticlesController が待っているパラメータ名（query や page）に合わせて、URLを組み立てているのがわかります。
 
-http://localhost:5173
-
-を開いてください。
-
-### POST curlコマンド
-#### 例：ユーザー
-curl -X POST http://localhost:3000/api/users \
-  -H "Content-Type: application/json" \
-  -d '{"user":{"name":"山本一郎"}}'
-
-### DELETE curlコマンド
-curl -X DELETE http://localhost:3000/api/users/1
-
-### プロジェクトのMVC対応
-RailsとReactを比較するとこうなります。
-
-|React|Rails|
-|:------|:-----:|
-|pages   |View   |
-|components   |partial   |
-|hooks   |Controller + Logic   |
-|services   |外部API通信   |
-|types   |Model定義   |
-
-### useUsers.ts の役割
-
-このファイルは、ユーザー一覧画面のロジックを全部まとめています。
-
-つまり「UsersPage」 の脳みそ
-
-です。
-
-### 処理の流れ（超重要）
-
-UsersPageから呼ばれます。
-
-const { users, loadUsers } = useUsers()
-
-すると
-
-UsersPage
-   ↓
-useUsers
-   ↓
-userApi
-   ↓
-Rails API
-
-になります。
-
-### コードをRuby脳で解説
-#### ① state
-const [users, setUsers] = useState<User[]>([])
-
-これはRailsで言う
-
-@users
-
-です。
-
-#### ② loading
-const [loading, setLoading] = useState(true)
-
-画面の読み込み中制御です。
-
-Railsだと
-
-Ajaxのローディング
-
-に近いです。
-
-#### ③ 並び替え
-const [sort, setSort] = useState<"id" | "name">("id")
-
-これは
-
-params[:sort]
-
-です。
-
-#### ④ ページ
-const [page, setPage] = useState(1)
-
-Railsだと
-
-params[:page]
-
-です。
-
-### 一番重要な関数
-#### loadUsers()
-const loadUsers = useCallback(async (search: string) => {
-
-これは
-
-Railsで言う
-
-def index
-
-に近いです。
-
-処理
-
-API呼び出し
-↓
-users state更新
-
-#### 中身
-const data = await fetchUsers(search, sort, page, perPage)
-
-ここで
-
-Rails API
-GET /api/users
-
-を呼んでいます。
-
-userApi.ts
-
-・役割
-HTTP通信
-
-つまり
-
-useUsers
-   ↓
-userApi
-
-です。
-
-### useStateとuseUsersの説明
-useState = データ保管庫
-useUsers = 処理のまとまり
-
-Reactを完全理解する最重要図
-
-コードをそのまま図にするとこれです。
-
-UsersPage.tsx
-   │
-   │ useUsers()
-   ▼
-useUsers.ts
-   │
-   │ fetchUsers()
-   ▼
-userApi.ts
-   │
-   │ HTTP
-   ▼
-Rails API
-   │
-   ▼
-DB
-
-
-|:------|:-----:|
-|useState   |データを保存   |
-|useEffect   |画面が開いたときの処理   |
-|useCallback   |関数をキャッシュ   |
-
-## UsersとArticles
-今の users 機能とほぼ同じです。
-
-Users機能
-Page → Hook → Service → Rails API → DB
-
-Articles機能
-Page → Hook → Service → Rails API → DB
+🚩 実務直結！即戦力になるための10の課題
+1. [UX] 保存・削除時のトースト通知
+課題: window.alert を卒業し、保存成功時に画面端に「記事を保存しました」と数秒だけ出る通知（トースト）を自作してください。
+学び: ユーザーにストレスを与えない「非同期なフィードバック」の実装。
+2. [UX] 送信中のボタン連打防止
+課題: 記事作成ボタンを押した後、通信が終わるまでボタンを disabled（非活性）にし、文字を「送信中...」に変えてください。
+学び: 二重投稿（DBに同じデータが2つ入るバグ）を防ぐ実務必須の防御策。
+3. [TS] Enum（列挙型）による状態管理
+課題: 記事の並び替え順を string ではなく、type SortOrder = "id" | "title" | "created_at" と定義し、これ以外の文字が入らないよう厳格に縛ってください。
+学び: 打ち間違い（タイポ）によるバグをコンパイル時点でゼロにする TypeScript の核心。
+4. [TS] localStorage の型安全なラップ
+課題: localStorage からデータを取り出す際、常に JSON.parse を書くのではなく、型を指定して一発で取り出せる「ストレージ・ヘルパー関数」を自作してください。
+学び: any 型を排除し、ブラウザに保存したデータにも自動補完を効かせるプロの技。
+5. [Rails/TS] 記事の「公開 / 下書き」切り替え
+課題: Railsに status カラムを追加し、React側で「下書き保存」か「公開投稿」かを選べるようにしてください。
+学び: Enum をバックエンドからフロントエンドまで一貫して通すフルスタックなデータ設計。
+6. [UX] スケルトンスクリーン（Loadingの改善）
+課題: データ読み込み中、「Loading...」という文字ではなく、記事カードの形をしたグレーの枠がふわっと光る演出（スケルトン）を実装してください。
+学び: 待ち時間を短く感じさせる「体感速度」の向上テクニック。
+7. [Security] フロントとバック両方でのバリデーション
+課題: タイトルが空の時、React側で送信を止めるだけでなく、Rails側でも 422エラーを返し、そのメッセージをReact側で赤文字で表示してください。
+学び: フロントを突破されてもDBを汚させない、堅牢なバリデーション設計。
+8. [Performance] 検索ワードのデバウンス調整
+課題: 現在のデバウンス処理を見直し、ユーザーがタイピングを止めてから 300ms 後にだけAPIを叩く、最も心地よいタイミングを探り当ててください。
+学び: サーバーへの負荷軽減と、ユーザーのサクサク感の絶妙なバランス調整。
+9. [TS] 共通インターフェースの抽出
+課題: Article と User で共通する項目（id, created_at など）を BaseModel として定義し、継承（extends）を使って型定義を整理してください。
+学び: DRY（繰り返しを避ける）なコードで、メンテナンス性の高い型定義を作る。
+10. [UX] パンくずリスト（Breadcrumbs）
+課題: ヘッダーの下に「記事一覧 > Reactの学習 > 編集」のように、今どこにいるか一目で分かり、戻れるリンク集を自動生成してください。
+学び: 階層の深いアプリでもユーザーを迷わせない、ナビゲーション設計。

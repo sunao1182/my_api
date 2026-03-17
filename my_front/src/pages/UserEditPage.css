@@ -1,0 +1,94 @@
+/* 編集画面のレイアウト（ArticleEditPageと統一） */
+.user-edit-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.user-edit-title {
+  font-size: 1.6rem;
+  color: #202124;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 2px solid #1a73e8; /* ユーザー編集は青のアクセント */
+  padding-bottom: 15px;
+}
+
+/* フォームの共通スタイル */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3c4043;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+}
+
+/* パスワード入力欄への注釈 */
+.field-hint {
+  font-size: 0.75rem;
+  color: #70757a;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* 保存ボタン */
+.btn-update-profile {
+  background-color: #1a73e8;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.btn-update-profile:hover {
+  background-color: #174ea6;
+}
+
+.edit-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.back-link {
+  color: #5f6368;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
