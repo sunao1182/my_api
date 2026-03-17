@@ -145,10 +145,8 @@ before_action的な初期処理の感覚	useEffect
 
 完全な対応ではありませんが、Rails経験者が最初に全体像をつかむには有効な考え方です。
 
-```md
 ## 🏗️ ディレクトリ構成
 
-```text
 my_api/
 ├─ app/
 │  ├─ channels/
@@ -186,7 +184,6 @@ my_api/
 │  └─ package.json
 
 └─ README.md
-```text
 
 📂 重要フォルダの役割
 Rails側
