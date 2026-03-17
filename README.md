@@ -1,95 +1,704 @@
-Rails 5.1.7 という「APIサーバーとしての安定感」を活かしつつ、モダンな React (Vite/TypeScript) を組み合わせたこのプロジェクトは、「フロントエンドとバックエンドの役割分担」を学ぶのに最高の教材です。
-初学者がこのリポジトリを開いたときに、「ワクワクしながら学習を始められる」ような、親切で読みやすい README.md を作成しました。
-🚀 MyBoard：Rails 5 API × React 掲示板アプリ
-このプロジェクトは、Ruby on Rails (APIモード) を「データの保管場所（倉庫）」として使い、React を「表示と操作の窓口（お店）」として使う、本格的な SPA（Single Page Application） の学習用アプリです。
-「Railsの知識はあるけれど、Reactはどう動いているの？」という初学者が、コードを読み解きながらステップアップできるように設計されています。
-🏗️ プロジェクトの構造（地図）
-このアプリは「バックエンド」の中に「フロントエンド」が同居する構成になっています。
-text
-my_api/ (Rails 5.1.7)  ← 【バックエンド】データを管理する「脳」
-└─ my_front/ (React)   ← 【フロントエンド】画面を表示する「顔」
-コードは注意してご使用ください。
+🚀 MyBoard
 
-Railsエンジニアのための「Reactフォルダ」対応表
-Reactのフォルダを、Railsの概念に例えるとこうなります！
-Reactの場所 (my_front/src/)	Railsでの例え	役割
-pages/	views/ + controllers	各画面のメイン。HTML構造と「どんなデータを出すか」を決めます。
-components/	_partial.html.erb	ヘッダーやカードなど、複数の画面で使い回す部品です。
-hooks/	concerns / 共通ロジック	データの取得や削除などの「複雑な動き」を外出ししたものです。
-services/	APIクライアント	Rails（3000番）に「データをちょうだい」とお願いする窓口です。
-types/	schema.rb の定義	データの形（名前、メールなど）を定義し、ミスを防ぎます。
-App.tsx	routes.rb	URL（/articles など）と画面を紐付ける司令塔です。
-🛠️ 準備と起動手順
-1. バックエンド (Rails 5.1.7) を動かす
-ターミナルの「タブ1」で実行します。
-bash
+Rails API × React（TypeScript）で作成した掲示板アプリ
+
+Rails API をバックエンド、React（TypeScript）をフロントエンドとして分離した構成で作成した、学習用かつ実務を意識した掲示板アプリです。
+
+📖 アプリ概要
+
+MyBoard は、Rails API と React（TypeScript） を組み合わせて作成した掲示板アプリです。
+
+このアプリでは、役割を次のように分けています。
+
+Rails
+
+データベースとのやり取りを行う
+
+APIとしてJSONを返す
+
+認証やデータ管理を担当する
+
+React
+
+Rails APIから受け取ったデータを画面に表示する
+
+フォーム入力や画面遷移を担当する
+
+TypeScript
+
+データの型を定義する
+
+実装ミスを減らし、保守性を高める
+
+Rails経験者が React を学ぶときに、
+「Railsでいうとどの役割に近いのか」 を意識しながら理解できる教材になることを目指しました。
+
+🎯 このアプリの目的
+
+このアプリの主な目的は、次の3点です。
+
+Rails API と React のつながりを理解する
+
+React / TypeScript の基本構成に慣れる
+
+実務で意識される責務分離を学ぶ
+
+特に、Railsしか触ったことがない人がフロントエンドを学ぶ最初の教材 として使いやすい構成を意識しています。
+
+👶 想定読者
+
+このアプリは、特に次のような方を想定しています。
+
+Ruby / Rails を学習したことがある方
+
+Rails1年目エンジニア
+
+React初学者
+
+TypeScript未経験者
+
+APIモードのRailsとフロントエンドの連携を理解したい方
+
+🛠️ 使用技術
+バックエンド
+
+Ruby
+
+Ruby on Rails
+
+SQLite3
+
+JWT認証
+
+フロントエンド
+
+React
+
+TypeScript
+
+Vite
+
+React Router
+
+その他
+
+Git / GitHub
+
+ESLint
+
+✨ 主な機能
+認証機能
+
+ログイン機能
+
+JWTを使った認証管理
+
+認証が必要な画面へのアクセス制御
+
+ユーザー機能
+
+ユーザー一覧表示
+
+ユーザー詳細表示
+
+ユーザー作成
+
+ユーザー編集
+
+ユーザー削除
+
+記事機能
+
+記事一覧表示
+
+記事詳細表示
+
+記事作成
+
+記事編集
+
+記事削除
+
+UI / 画面制御
+
+ローディング表示
+
+エラー表示
+
+検索
+
+ソート
+
+ページネーション
+
+🧠 Rails経験者向け：対応イメージ
+
+React / TypeScript は Rails と完全に同じではありませんが、最初は次のように考えると理解しやすいです。
+
+Rails	React / TypeScript
+html.erb	tsx
+partial	component
+controllerで用意する表示用データ	hooks / page内の処理
+routes.rb	App.tsx のルーティング
+modelの属性イメージ	types/ の型定義
+before_action的な初期処理の感覚	useEffect
+
+完全な対応ではありませんが、Rails経験者が最初に全体像をつかむには有効な考え方です。
+
+🏗️ ディレクトリ構成
+my_api/
+├─ app/
+│  ├─ channels/
+│  │  └─ application_cable/
+│  ├─ controllers/
+│  │  ├─ api/
+│  │  │  ├─ articles_controller.rb
+│  │  │  ├─ auth_controller.rb
+│  │  │  └─ users_controller.rb
+│  │  ├─ concerns/
+│  │  │  └─ json_web_token.rb
+│  │  └─ application_controller.rb
+│  ├─ models/
+│  │  ├─ article.rb
+│  │  └─ user.rb
+│  └─ views/
+├─ config/
+├─ db/
+│  ├─ migrate/
+│  ├─ schema.rb
+│  └─ seeds.rb
+├─ my_front/
+│  ├─ src/
+│  │  ├─ components/
+│  │  ├─ hooks/
+│  │  ├─ pages/
+│  │  ├─ services/
+│  │  ├─ types/
+│  │  ├─ App.tsx
+│  │  └─ main.tsx
+│  └─ package.json
+└─ README.md
+📂 重要フォルダの役割
+Rails側
+app/controllers/api/
+
+React から送られてきたリクエストを受け取り、JSONを返す場所です。
+
+articles_controller.rb
+記事機能のAPIを担当します。
+
+users_controller.rb
+ユーザー機能のAPIを担当します。
+
+auth_controller.rb
+ログイン処理や認証関連のAPIを担当します。
+
+app/controllers/concerns/json_web_token.rb
+
+JWTトークンを発行・検証するための共通処理です。
+
+app/models/
+
+データベースとやり取りするモデルです。
+
+article.rb
+
+user.rb
+
+config/routes.rb
+
+APIのURLと、どのcontrollerにつなぐかを定義します。
+
+db/schema.rb
+
+現在のテーブル構成を確認できます。
+
+React側
+my_front/src/pages/
+
+画面単位のファイルを置く場所です。
+
+例：
+
+ArticlesPage.tsx
+
+ArticleDetailPage.tsx
+
+ArticleNewPage.tsx
+
+ArticleEditPage.tsx
+
+UsersPage.tsx
+
+UserDetailPage.tsx
+
+UserNewPage.tsx
+
+UserEditPage.tsx
+
+LoginPage.tsx
+
+Railsでいうと、1画面分の view に近い役割です。
+
+my_front/src/components/
+
+画面の中で使う部品を置く場所です。
+
+例：
+
+ArticleCard.tsx
+
+ArticleForm.tsx
+
+UserCard.tsx
+
+UserForm.tsx
+
+Header.tsx
+
+Loading.tsx
+
+ErrorMessage.tsx
+
+RequireAuth.tsx
+
+Railsでいう partial に近い役割です。
+
+my_front/src/hooks/
+
+画面で使うロジックをまとめる場所です。
+
+例：
+
+useArticles.ts
+
+useArticle.ts
+
+useUsers.ts
+
+useUser.ts
+
+useDebounce.ts
+
+API取得、loading管理、error管理、検索条件の制御などをまとめます。
+
+my_front/src/services/
+
+Rails API と通信する処理を書く場所です。
+
+例：
+
+articleApi.ts
+
+userApi.ts
+
+authApi.ts
+
+authStorage.ts
+
+my_front/src/types/
+
+TypeScript の型定義を書く場所です。
+
+例：
+
+article.ts
+
+user.ts
+
+my_front/src/App.tsx
+
+フロントエンド側のルーティング定義をまとめる中心ファイルです。
+
+my_front/src/main.tsx
+
+Reactアプリの起点となるファイルです。
+
+🔥 このアプリのデータの流れ
+
+このアプリで最も大切なのは、次の流れです。
+
+① Reactの画面が開く
+        ↓
+② hooks が API取得処理を呼ぶ
+        ↓
+③ services が Rails API にリクエストを送る
+        ↓
+④ Rails controller が JSON を返す
+        ↓
+⑤ React が state に保存する
+        ↓
+⑥ 画面に一覧や詳細が表示される
+
+この流れを理解できると、Rails API × React の基本がかなり見えやすくなります。
+
+🧭 おすすめの読み進め方
+
+React初学者は、次の順番でコードを見ると理解しやすいです。
+
+1. 画面を確認する
+
+まずは pages/ を見て、どんな画面があるかを確認します。
+
+おすすめ：
+
+ArticlesPage.tsx
+
+UsersPage.tsx
+
+LoginPage.tsx
+
+2. 画面の部品を見る
+
+次に components/ を見て、画面のどの部分を分けているかを確認します。
+
+おすすめ：
+
+ArticleCard.tsx
+
+UserCard.tsx
+
+ArticleForm.tsx
+
+UserForm.tsx
+
+3. ロジックを見る
+
+次に hooks/ を見て、データ取得や状態管理の流れを確認します。
+
+おすすめ：
+
+useArticles.ts
+
+useUsers.ts
+
+useArticle.ts
+
+useUser.ts
+
+4. API通信を見る
+
+次に services/ を見て、どのURLへリクエストしているかを確認します。
+
+おすすめ：
+
+articleApi.ts
+
+userApi.ts
+
+authApi.ts
+
+5. 最後にRailsを見る
+
+最後に Rails 側の controller と routes を見て、フロントからの通信先を確認します。
+
+おすすめ：
+
+config/routes.rb
+
+app/controllers/api/articles_controller.rb
+
+app/controllers/api/users_controller.rb
+
+app/controllers/api/auth_controller.rb
+
+🧪 Reactコードの見方（Rails1年目向け）
+pages/ は画面本体
+
+pages/ では、画面全体の流れを組み立てます。
+
+たとえば ArticlesPage.tsx では、
+
+記事一覧を取得する
+
+loadingなら読み込み中を表示する
+
+errorならエラー表示を出す
+
+正常なら記事一覧を表示する
+
+といった流れを持ちます。
+
+components/ は表示の部品
+
+ArticleCard.tsx は記事1件を表示する部品、
+UserForm.tsx はユーザー入力フォームの部品です。
+
+部品に分けることで、コードが読みやすくなり、再利用しやすくなります。
+
+hooks/ は画面用ロジック
+
+useArticles.ts では、
+
+記事一覧の取得
+
+loading管理
+
+error管理
+
+のような処理をまとめます。
+
+Railsでいう controller に少し近い考え方ですが、Reactでは再利用しやすいように hooks に分けることがあります。
+
+services/ はAPIとの橋渡し
+
+articleApi.ts や userApi.ts では、Rails APIへの通信を書きます。
+
+React側から見ると、Railsへお願いを送る窓口のような役割です。
+
+types/ はデータの設計図
+
+TypeScriptでは、データの形を型として定義します。
+
+たとえば article.ts で Article 型を定義しておくと、
+
+id は数値
+
+title は文字列
+
+body は文字列
+
+のように明確になります。
+
+🧩 初学者がつまずきやすいポイント
+propsとは
+
+親コンポーネントから子コンポーネントへ渡す値です。
+Railsでいうと、partial に locals を渡す感覚に近いです。
+
+stateとは
+
+画面が現在持っている値です。
+値が変わると、Reactは画面を再描画します。
+
+例：
+
+記事一覧
+
+フォーム入力値
+
+ローディング状態
+
+エラーメッセージ
+
+useEffectとは
+
+画面表示後に処理を実行したいときに使います。
+
+例：
+
+一覧画面を開いたらAPIを呼ぶ
+
+URLのIDが変わったら再取得する
+
+mapとは
+
+配列を1件ずつ取り出して表示するときによく使います。
+
+awaitとは
+
+API通信などの非同期処理が終わるまで待つための書き方です。
+
+🔐 認証機能の流れ
+
+このアプリでは JWT を使った認証を実装しています。
+
+関連ファイル
+Rails側
+
+app/controllers/api/auth_controller.rb
+
+app/controllers/concerns/json_web_token.rb
+
+React側
+
+my_front/src/services/authApi.ts
+
+my_front/src/services/authStorage.ts
+
+my_front/src/components/RequireAuth.tsx
+
+my_front/src/pages/LoginPage.tsx
+
+ログインの流れ
+① ログイン画面でメールアドレス・パスワードを入力
+        ↓
+② React が authApi.ts で Rails に送信
+        ↓
+③ Rails が認証成功なら JWT を返す
+        ↓
+④ React が token を保存する
+        ↓
+⑤ RequireAuth で未ログイン時のアクセスを制御する
+
+この流れは、実務でもよく使われる基本構成です。
+
+📘 最初に読むと理解しやすいファイル
+フロント側
+
+my_front/src/App.tsx
+
+my_front/src/pages/ArticlesPage.tsx
+
+my_front/src/components/ArticleCard.tsx
+
+my_front/src/hooks/useArticles.ts
+
+my_front/src/services/articleApi.ts
+
+my_front/src/types/article.ts
+
+次に読む
+
+my_front/src/pages/UsersPage.tsx
+
+my_front/src/components/UserCard.tsx
+
+my_front/src/hooks/useUsers.ts
+
+my_front/src/services/userApi.ts
+
+my_front/src/types/user.ts
+
+認証を読む
+
+my_front/src/pages/LoginPage.tsx
+
+my_front/src/components/RequireAuth.tsx
+
+my_front/src/services/authApi.ts
+
+my_front/src/services/authStorage.ts
+
+Rails側
+
+config/routes.rb
+
+app/controllers/api/articles_controller.rb
+
+app/controllers/api/users_controller.rb
+
+app/controllers/api/auth_controller.rb
+
+app/models/article.rb
+
+app/models/user.rb
+
+🚀 セットアップ手順
+1. Rails API を起動
 cd my_api
 bundle install
-rails db:create db:migrate db:seed
-rails s -p 3000
-コードは注意してご使用ください。
+bin/rails db:migrate
+bin/rails db:seed
+bin/rails s
 
-役割: http://localhost:3000 で、JSONデータを配信します。
-2. フロントエンド (React / Vite) を動かす
-ターミナルの「タブ2」で実行します。
-bash
+Rails は通常、http://localhost:3000 で起動します。
+
+2. React を起動
 cd my_api/my_front
 npm install
 npm run dev
-コードは注意してご使用ください。
 
-役割: http://localhost:5173 で、私たちが操作する画面を表示します。
-🎓 このアプリで学べる「5つの重要ポイント」
-API通信の仕組み:
-Railsが吐き出した「JSONデータ」を、Reactが fetch（JavaScriptの通信機能）で受け取って画面に描画する流れ。
-JWTによるログイン認証:
-パスワードではなく「トークン」という鍵をブラウザ（localStorage）に保存して、ログイン状態を維持する方法。
-高度な検索機能:
-文字を打つたびに検索が走るけれど、サーバーに負荷をかけない「デバウンス（待ち時間）」の実装。
-モダンなCSS設計:
-.css ファイルをコンポーネントごとに分け、Flexboxを使って「カード型」の綺麗なデザインを作る方法。
-TypeScriptによる安全な開発:
-「このデータは文字列、このIDは数字」と型を決めることで、エラーを未然に防ぐプロの書き方。
-🔍 コードを読んでみよう（学習ガイド）
-まずはここから：ArticlesPage.tsx
-記事一覧を表示する画面です。
-useEffect という機能を使って、画面が開いた瞬間にRailsへデータをリクエストしています。
-検索窓に文字を打つと、どうやって一覧が切り替わるのかを追ってみてください。
-部品の再利用：ArticleCard.tsx
-1つ1つの記事をカード状に見せる部品です。
-Railsの render @articles のように、map 関数を使って記事を1つずつカードに流し込んでいる様子が見られます。
-通信の裏側：services/articleApi.ts
-ここが Rails（3000番）との通信経路です。
-Rails側の ArticlesController が待っているパラメータ名（query や page）に合わせて、URLを組み立てているのがわかります。
+React は通常、http://localhost:5173 で起動します。
 
-🚩 実務直結！即戦力になるための10の課題
-1. [UX] 保存・削除時のトースト通知
-課題: window.alert を卒業し、保存成功時に画面端に「記事を保存しました」と数秒だけ出る通知（トースト）を自作してください。
-学び: ユーザーにストレスを与えない「非同期なフィードバック」の実装。
-2. [UX] 送信中のボタン連打防止
-課題: 記事作成ボタンを押した後、通信が終わるまでボタンを disabled（非活性）にし、文字を「送信中...」に変えてください。
-学び: 二重投稿（DBに同じデータが2つ入るバグ）を防ぐ実務必須の防御策。
-3. [TS] Enum（列挙型）による状態管理
-課題: 記事の並び替え順を string ではなく、type SortOrder = "id" | "title" | "created_at" と定義し、これ以外の文字が入らないよう厳格に縛ってください。
-学び: 打ち間違い（タイポ）によるバグをコンパイル時点でゼロにする TypeScript の核心。
-4. [TS] localStorage の型安全なラップ
-課題: localStorage からデータを取り出す際、常に JSON.parse を書くのではなく、型を指定して一発で取り出せる「ストレージ・ヘルパー関数」を自作してください。
-学び: any 型を排除し、ブラウザに保存したデータにも自動補完を効かせるプロの技。
-5. [Rails/TS] 記事の「公開 / 下書き」切り替え
-課題: Railsに status カラムを追加し、React側で「下書き保存」か「公開投稿」かを選べるようにしてください。
-学び: Enum をバックエンドからフロントエンドまで一貫して通すフルスタックなデータ設計。
-6. [UX] スケルトンスクリーン（Loadingの改善）
-課題: データ読み込み中、「Loading...」という文字ではなく、記事カードの形をしたグレーの枠がふわっと光る演出（スケルトン）を実装してください。
-学び: 待ち時間を短く感じさせる「体感速度」の向上テクニック。
-7. [Security] フロントとバック両方でのバリデーション
-課題: タイトルが空の時、React側で送信を止めるだけでなく、Rails側でも 422エラーを返し、そのメッセージをReact側で赤文字で表示してください。
-学び: フロントを突破されてもDBを汚させない、堅牢なバリデーション設計。
-8. [Performance] 検索ワードのデバウンス調整
-課題: 現在のデバウンス処理を見直し、ユーザーがタイピングを止めてから 300ms 後にだけAPIを叩く、最も心地よいタイミングを探り当ててください。
-学び: サーバーへの負荷軽減と、ユーザーのサクサク感の絶妙なバランス調整。
-9. [TS] 共通インターフェースの抽出
-課題: Article と User で共通する項目（id, created_at など）を BaseModel として定義し、継承（extends）を使って型定義を整理してください。
-学び: DRY（繰り返しを避ける）なコードで、メンテナンス性の高い型定義を作る。
-10. [UX] パンくずリスト（Breadcrumbs）
-課題: ヘッダーの下に「記事一覧 > Reactの学習 > 編集」のように、今どこにいるか一目で分かり、戻れるリンク集を自動生成してください。
-学び: 階層の深いアプリでもユーザーを迷わせない、ナビゲーション設計。
+📡 APIの役割
+
+このアプリでは、React が Rails API に対してリクエストを送る構成です。
+
+主なAPIは次の通りです。
+
+メソッド	パス	内容
+GET	/api/articles	記事一覧取得
+GET	/api/articles/:id	記事詳細取得
+POST	/api/articles	記事作成
+PUT / PATCH	/api/articles/:id	記事更新
+DELETE	/api/articles/:id	記事削除
+GET	/api/users	ユーザー一覧取得
+GET	/api/users/:id	ユーザー詳細取得
+POST	/api/users	ユーザー作成
+PUT / PATCH	/api/users/:id	ユーザー更新
+DELETE	/api/users/:id	ユーザー削除
+POST	認証用エンドポイント	ログイン
+
+認証エンドポイントの正確なパスは config/routes.rb を確認してください。
+
+🎯 このアプリで学べること
+
+Rails APIモードの基本
+
+Reactの画面構成
+
+componentによる部品分割
+
+hooksによるロジック分離
+
+servicesによるAPI通信の分離
+
+TypeScriptの型定義
+
+JWT認証の基本
+
+検索 / ソート / ページネーションの考え方
+
+ローディング / エラー処理の基本
+
+💡 学習のコツ
+
+React / TypeScript は、最初から全部理解しようとすると難しく感じやすいです。
+そのため、次の意識で学ぶのがおすすめです。
+
+まずは全体の流れをつかむ
+
+1ファイルずつ役割を見る
+
+Railsでいうと何に近いか考える
+
+文法より先にデータの流れを追う
+
+1回目で完璧を目指さない
+
+特に大事なのは、
+
+「どこでAPIを呼んで、どこで値を保存して、どこで表示しているか」
+
+を追えるようになることです。
+
+🔥 面談で説明しやすいポイント
+
+このアプリを面談で説明するときは、次のように伝えると整理しやすいです。
+
+1. どんなアプリか
+
+Rails API と React を分離した掲示板アプリです。
+ユーザー機能、記事機能、ログイン機能を実装しています。
+
+2. 工夫した点
+
+フロント側を pages / components / hooks / services / types に分けて、責務を整理しました。
+
+3. 学習・設計上のポイント
+
+Rails経験者でも理解しやすいように、画面、部品、ロジック、API通信を分離した構成にしています。
+
+4. 技術的な見どころ
+
+JWT認証、TypeScriptによる型定義、検索・ソート・ページネーションなど、実務を意識した実装を取り入れています。
+
+🔚 まとめ
+
+このアプリは、
+Railsエンジニアが React / TypeScript / API連携 / JWT認証 を学ぶための教材兼ポートフォリオ として作成しました。
+
+特にフロント側では、次の5つを意識するとコードが読みやすくなります。
+
+pages = 画面
+
+components = 部品
+
+hooks = ロジック
+
+services = API通信
+
+types = 型
+
+この役割分担を理解することで、React初学者でもコードを追いやすくなる構成を目指しています。
