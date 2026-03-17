@@ -186,6 +186,7 @@ my_api/
 │  └─ package.json
 
 └─ README.md
+```text
 
 📂 重要フォルダの役割
 Rails側
@@ -711,3 +712,102 @@ services = API通信
 types = 型
 
 この役割分担を理解することで、React初学者でもコードを追いやすくなる構成を目指しています。
+
+
+🧩 フロント構成（拡大図）
+my_front/src/
+├─ pages/        # 画面（ルーティング単位）
+│  ├─ ArticlesPage.tsx
+│  ├─ ArticleDetailPage.tsx
+│  ├─ UsersPage.tsx
+│  └─ LoginPage.tsx
+│
+├─ components/   # UI部品
+│  ├─ ArticleCard.tsx
+│  ├─ ArticleForm.tsx
+│  ├─ UserCard.tsx
+│  ├─ UserForm.tsx
+│  ├─ Header.tsx
+│  ├─ Loading.tsx
+│  └─ ErrorMessage.tsx
+│
+├─ hooks/        # ロジック（状態管理・API呼び出し）
+│  ├─ useArticles.ts
+│  ├─ useArticle.ts
+│  ├─ useUsers.ts
+│  ├─ useUser.ts
+│  └─ useDebounce.ts
+│
+├─ services/     # API通信
+│  ├─ articleApi.ts
+│  ├─ userApi.ts
+│  ├─ authApi.ts
+│  └─ authStorage.ts
+│
+└─ types/        # 型定義
+   ├─ article.ts
+   └─ user.ts
+🔥 データの流れ（超重要）
+【画面表示の流れ】
+
+① pages（画面）が表示される
+        ↓
+② hooks が呼ばれる（useArticles など）
+        ↓
+③ services が API を呼ぶ（fetch）
+        ↓
+④ Rails API が JSON を返す
+        ↓
+⑤ hooks が state に保存する
+        ↓
+⑥ pages が再描画される
+        ↓
+⑦ components がデータを表示する
+🧠 Railsとの対応イメージ（図解）
+Rails                    React
+
+controller        →     hooks / services
+view(.erb)        →     pages / components
+partial           →     component
+routes.rb         →     App.tsx（Router）
+model             →     types（型イメージ）
+🔄 1画面の処理フロー（ArticlesPage例）
+【ArticlesPage.tsx】
+
+① 画面表示
+   ↓
+② useEffect 発火
+   ↓
+③ loadArticles() 実行
+   ↓
+④ fetchArticles()（API通信）
+   ↓
+⑤ Rails が JSON を返す
+   ↓
+⑥ setArticles() で state 更新
+   ↓
+⑦ 再レンダリング
+   ↓
+⑧ ArticleCard が一覧表示
+🔐 認証フロー（JWT）
+【ログイン処理】
+
+① LoginPageで入力
+   ↓
+② authApi.ts がRailsへ送信
+   ↓
+③ RailsがJWTを発行
+   ↓
+④ authStorageに保存
+   ↓
+⑤ 以降のAPIにtoken付与
+   ↓
+⑥ RequireAuthでアクセス制御
+🎯 初学者向けまとめ（超重要）
+Reactはこの5つだけ覚える
+
+pages      = 画面
+components = 部品
+hooks      = ロジック
+services   = API通信
+types      = 型
