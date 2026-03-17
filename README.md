@@ -750,7 +750,7 @@ my_front/src/
 
 🔥 データの流れ（超重要）
 【画面表示の流れ】
-
+```text
 ① pages（画面）が表示される
         ↓
 ② hooks が呼ばれる（useArticles など）
@@ -764,7 +764,11 @@ my_front/src/
 ⑥ pages が再描画される
         ↓
 ⑦ components がデータを表示する
+```
+
 🧠 Railsとの対応イメージ（図解）
+
+```text
 Rails                    React
 
 controller        →     hooks / services
@@ -772,8 +776,11 @@ view(.erb)        →     pages / components
 partial           →     component
 routes.rb         →     App.tsx（Router）
 model             →     types（型イメージ）
+```
+
 🔄 1画面の処理フロー（ArticlesPage例）
 【ArticlesPage.tsx】
+```text
 
 ① 画面表示
    ↓
@@ -790,8 +797,11 @@ model             →     types（型イメージ）
 ⑦ 再レンダリング
    ↓
 ⑧ ArticleCard が一覧表示
+```
+
 🔐 認証フロー（JWT）
 【ログイン処理】
+```text
 
 ① LoginPageで入力
    ↓
@@ -804,8 +814,11 @@ model             →     types（型イメージ）
 ⑤ 以降のAPIにtoken付与
    ↓
 ⑥ RequireAuthでアクセス制御
+```
+
 🎯 初学者向けまとめ（超重要）
 Reactはこの5つだけ覚える
+```text
 
 pages      = 画面
 components = 部品
