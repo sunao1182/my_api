@@ -528,6 +528,7 @@ my_front/src/components/RequireAuth.tsx
 
 my_front/src/pages/LoginPage.tsx
 
+```text
 ログインの流れ
 ① ログイン画面でメールアドレス・パスワードを入力
         ↓
@@ -538,6 +539,7 @@ my_front/src/pages/LoginPage.tsx
 ④ React が token を保存する
         ↓
 ⑤ RequireAuth で未ログイン時のアクセスを制御する
+```
 
 この流れは、実務でもよく使われる基本構成です。
 
